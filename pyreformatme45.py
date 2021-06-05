@@ -45,28 +45,26 @@ def main():
     df['W2'] = df['W2'].fillna(9999).astype(int)
 
     # QFF
-    df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))
-    # df['QFF_help'] = df['QFF'].astype(str).apply(lambda x: x.zfill(4))
-    # df['QFF_help'] = df['QFF'].astype(str).apply(lambda x: x.zfill(4))
-
-    # df['QFF_help2'] = df['QFF_help'][df['QFF_help'].notnull()]
-
-    df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF_new'] = pd.to_numeric( str(1) + df['QFF']) / 10 #todo. ini harusnya yang Nan jangan diikutsertakan
-    df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF_new'] = pd.to_numeric(df['QFF']) / 10 
-
-    # df.loc[df['QFF_help'].notnull()] = pd.to_numeric( str(1) + df['QFF_help'].astype(str)) / 10 #todo. ini harusnya yang Nan jangan diikutsertakan
-
-    print(df[['QFF', 'QFF_new']])
-
-    # df['QFF_new'] = pd.to_numeric( str(1) + df['QFF_help']) / 10
-    #todo: kalau nanti 9978 gimana jadinya apa
+    # df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))    
+    df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])]
+    df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
+    df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF_new'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
+    df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF_new'] = pd.to_numeric(df['QFF']) / 10  
+    df['QFF_new'] = df['QFF_new'].fillna(9999).astype(float)
+    # print(df[['QFF', 'QFF_new']])   
 
     # TtTtTt	
-    df['TtTtTt'] = df['TtTtTt'] / 10
+    df['TtTtTt'] = df['TtTtTt'][~df['TtTtTt'].isin([9999, 99999])]
+    df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ] / 10
+    df['TtTtTt_new'] = df['TtTtTt'].fillna(9999).astype(float)
 
     # Nh -> OK
+    df['Nh'] = df['Nh'][~df['Nh'].isin([9999, 99999])]
+    df['Nh'] = df['Nh'].fillna(9999).astype(int)
 
     # CL -> OK
+    df['CL'] = df['CL'][~df['CL'].isin([9999, 99999])]
+    df['CL'] = df['CL'].fillna(9999).astype(int)
 
     # h	
     def funch(n):
@@ -79,125 +77,283 @@ def main():
         elif n == 6: h = 1500
         elif n == 7: h = 2000
         elif n == 8: h = 2500
-        elif n == 9: h = 9999 #todo:
-        elif n == '//': h = '//' #todo:
+        elif n == 9: h = 9999 #todo: ini seharusnya diisi apa ya?
+        elif n == '/': h = '//' #todo: apakah perlu begini?
+        elif n == '//': h = '//' #todo: apa ini sudah ok?
         else: h = 9999
         return(h)
 
     df['h_new'] = df['h'].apply(funch)
 
     # CM -> OK
+    df['CM'] = df['CM'][~df['CM'].isin([9999, 99999])]
+    df['CM'] = df['CM'].fillna(9999).astype(int)
 
     # CH -> OK
+    df['CH'] = df['CH'][~df['CH'].isin([9999, 99999])]
+    df['CH'] = df['CH'].fillna(9999).astype(int)
 
     # Ns_1 -> OK
+    df['Ns_1'] = df['Ns_1'][~df['Ns_1'].isin([9999, 99999])]
+    df['Ns_1'] = df['Ns_1'].fillna(9999).astype(int)
 
     # C_1 -> OK
+    df['C_1'] = df['C_1'][~df['C_1'].isin([9999, 99999])]
+    df['C_1'] = df['C_1'].fillna(9999).astype(int)
+
+
+    def funcHshs(n):
+        if n == 0: hshs = 0        
+        elif n == 1: hshs = 30
+        elif n == 2: hshs = 60
+        elif n == 3: hshs = 90
+        elif n == 4: hshs = 120
+        elif n == 5: hshs = 150
+        elif n == 6: hshs = 180
+        elif n == 7: hshs = 210
+        elif n == 8: hshs = 240
+        elif n == 9: hshs = 270
+        elif n == 10: hshs = 300
+        elif n == 11: hshs = 330
+        elif n == 12: hshs = 360
+        elif n == 13: hshs = 390
+        elif n == 14: hshs = 420
+        elif n == 15: hshs = 450
+        elif n == 16: hshs = 480
+        elif n == 17: hshs = 510
+        elif n == 18: hshs = 540
+        elif n == 19: hshs = 570
+        elif n == 20: hshs = 600
+        elif n == 21: hshs = 630
+        elif n == 22: hshs = 660
+        elif n == 23: hshs = 690
+        elif n == 24: hshs = 720
+        elif n == 25: hshs = 750
+        elif n == 26: hshs = 780
+        elif n == 27: hshs = 810
+        elif n == 28: hshs = 840
+        elif n == 29: hshs = 870
+        elif n == 30: hshs = 900
+        elif n == 31: hshs = 930
+        elif n == 32: hshs = 960
+        elif n == 33: hshs = 990
+        elif n == 34: hshs = 1020
+        elif n == 35: hshs = 1050
+        elif n == 36: hshs = 1080
+        elif n == 37: hshs = 1110
+        elif n == 38: hshs = 1140
+        elif n == 39: hshs = 1170
+        elif n == 40: hshs = 1200
+        elif n == 41: hshs = 1230
+        elif n == 42: hshs = 1260
+        elif n == 43: hshs = 1290
+        elif n == 44: hshs = 1320
+        elif n == 45: hshs = 1350
+        elif n == 46: hshs = 1380
+        elif n == 47: hshs = 1410
+        elif n == 48: hshs = 1440
+        elif n == 49: hshs = 1470
+        elif n == 50: hshs = 1500
+        elif n == 51: hshs = 9999 #todo: apa sudah ok
+        elif n == 52: hshs = 9999 #todo: apa sudah ok
+        elif n == 53: hshs = 9999 #todo: apa sudah ok
+        elif n == 54: hshs = 9999 #todo: apa sudah ok
+        elif n == 55: hshs = 9999 #todo: apa sudah ok
+        elif n == 56: hshs = 1800
+        elif n == 57: hshs = 2100
+        elif n == 58: hshs = 2400
+        elif n == 59: hshs = 2700
+        elif n == 60: hshs = 3000
+        elif n == 61: hshs = 3300
+        elif n == 62: hshs = 3600
+        elif n == 63: hshs = 3900
+        elif n == 64: hshs = 4200
+        elif n == 65: hshs = 4500
+        elif n == 66: hshs = 4800
+        elif n == 67: hshs = 5100
+        elif n == 68: hshs = 5400
+        elif n == 69: hshs = 5700
+        elif n == 70: hshs = 6000
+        elif n == 71: hshs = 6300
+        elif n == 72: hshs = 6600
+        elif n == 73: hshs = 6900
+        elif n == 74: hshs = 7200
+        elif n == 75: hshs = 7500
+        elif n == 76: hshs = 7800
+        elif n == 77: hshs = 8100
+        elif n == 78: hshs = 8400
+        elif n == 79: hshs = 8700
+        elif n == 80: hshs = 9000
+        elif n == 81: hshs = 10500
+        elif n == 82: hshs = 12000
+        elif n == 83: hshs = 13500
+        elif n == 84: hshs = 15000
+        elif n == 85: hshs = 16500
+        elif n == 86: hshs = 18000
+        elif n == 87: hshs = 19500
+        elif n == 88: hshs = 21000
+        elif n == 89: hshs = 21000 #todo: apa sudah ok
+        elif n == 90: hshs = 9999 #todo: apa sudah ok
+        elif n == 91: hshs = 9999 #todo: apa sudah ok
+        elif n == 92: hshs = 9999 #todo: apa sudah ok
+        elif n == 93: hshs = 9999 #todo: apa sudah ok
+        elif n == 94: hshs = 9999 #todo: apa sudah ok
+        elif n == 95: hshs = 9999 #todo: apa sudah ok
+        elif n == 96: hshs = 9999 #todo: apa sudah ok
+        elif n == 97: hshs = 9999 #todo: apa sudah ok
+        elif n == 98: hshs = 9999 #todo: apa sudah ok
+        elif n == 99: hshs = 9999 #todo: apa sudah ok
+        else: hshs = 9999
+        return(hshs)
 
     # Hshs_1	
-    def funcHshs(n): #todo. kayaknya salah ini if else nya
-        if n == 0: h = 50
-        elif n == 1: h = 100
-        elif n == 2: h = 200
-        elif n == 3: h = 300
-        elif n == 4: h = 600
-        elif n == 5: h = 1000
-        elif n == 6: h = 1500
-        elif n == 7: h = 2000
-        elif n == 8: h = 2500
-        elif n == 9: h = 9999 #todo:
-        elif n == '//': h = '//' #todo:
-        else: h = 9999
-        return(h)
-    
-
     df['Hshs_1_new'] = df['Hshs_1'].apply(funcHshs)
 
     # Ns_2 -> OK
+    df['Ns_2'] = df['Ns_2'][~df['Ns_2'].isin([9999, 99999])]
+    df['Ns_2'] = df['Ns_2'].fillna(9999).astype(int)
 
     # C_2 -> OK
+    df['C_2'] = df['C_2'][~df['C_2'].isin([9999, 99999])]
+    df['C_2'] = df['C_2'].fillna(9999).astype(int)
 
     # Hshs_2	
     df['Hshs_2_new'] = df['Hshs_2'].apply(funcHshs)
 
     # Ns_3 -> OK
+    df['Ns_3'] = df['Ns_3'][~df['Ns_3'].isin([9999, 99999])]
+    df['Ns_3'] = df['Ns_3'].fillna(9999).astype(int)
 
     # C_3 -> OK
+    df['C_3'] = df['C_3'][~df['C_3'].isin([9999, 99999])]
+    df['C_3'] = df['C_3'].fillna(9999).astype(int)
 
     # Hshs_3	
     df['Hshs_3_new'] = df['Hshs_3'].apply(funcHshs)
 
     # e	-> OK
+    df['e'] = df['e'][~df['e'].isin([9999, 99999])]
+    df['e'] = df['e'].fillna(9999).astype(int)
 
     # UU -> OK
+    df['UU'] = df['UU'][~df['UU'].isin([9999, 99999])]
+    df['UU'] = df['UU'].fillna(9999).astype(int)
 
     # QFE
-    df['QFE_help'] = df['QFE'].astype(str).apply(lambda x: x.zfill(4))
-    df['QFE_new'] = pd.to_numeric( str(1) + df['QFE_help']) / 10
-    #todo: kalau nanti 9978 gimana jadinya apa
+    df['QFE'] = df['QFE'][~df['QFE'].isin([9999, 99999])]
+    df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(str).apply(lambda x: x.zfill(4))        
+    df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE_new'] = (10000 + pd.to_numeric(df['QFE'])) / 10
+    df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE_new'] = pd.to_numeric(df['QFE']) / 10  
+    df['QFE_new'] = df['QFE_new'].fillna(9999).astype(float)   
+
+    # df['QFE_help'] = df['QFE'].astype(str).apply(lambda x: x.zfill(4))
+    # df['QFE_new'] = pd.to_numeric( str(1) + df['QFE_help']) / 10
 
     # TwTwTw	
-    df['TwTwTw'] = (df['TwTwTw'] / 10)
+    df['TwTwTw'] = df['TwTwTw'][~df['TwTwTw'].isin([9999, 99999])]
+    df['TwTwTw'] = df['TwTwTw'][ df['TwTwTw'].notnull() ] / 10
+    df['TwTwTw_new'] = df['TwTwTw'].fillna(9999).astype(float)
 
     # RRR	
     # panduan hal 24
-    
     df['RRR_new'] = df['RRR'].apply(funcRRR)
 
     # tR -> OK
+    df['tR'] = df['tR'][~df['tR'].isin([9999, 99999])]
+    df['tR'] = df['tR'].fillna(9999).astype(int)
 
     # TxTxTx
-    df['TxTxTx'] = (df['TxTxTx'] / 10)
+    df['TxTxTx'] = df['TxTxTx'][~df['TxTxTx'].isin([9999, 99999])]
+    df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ] / 10
+    df['TxTxTx_new'] = df['TxTxTx'].fillna(9999).astype(float)
 
     # TnTnTn	
-    df['TnTnTn'] = (df['TnTnTn'] / 10)
+    df['TnTnTn'] = df['TnTnTn'][~df['TnTnTn'].isin([9999, 99999])]
+    df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ] / 10
+    df['TnTnTn_new'] = df['TnTnTn'].fillna(9999).astype(float)
 
     # EEE	
-    df['EEE'] = (df['EEE'] / 10)
+    df['EEE'] = df['EEE'][~df['EEE'].isin([9999, 99999])]
+    df['EEE'] = df['EEE'][ df['EEE'].notnull() ] / 10
+    df['EEE'] = df['EEE'].fillna(9999).astype(float)
 
     # F24F24F24F24	-> OK #todo: dicek lagi
+    df['F24F24F24F24'] = df['F24F24F24F24'][~df['F24F24F24F24'].isin([9999, 99999])]
+    df['F24F24F24F24'] = df['F24F24F24F24'].fillna(9999).astype(int)
 
     # SSS	
-    df['SSS'] = (df['SSS'] / 10)
+    df['SSS'] = df['SSS'][~df['SSS'].isin([9999, 99999])]
+    df['SSS'] = df['SSS'][ df['SSS'].notnull() ] / 10
+    df['SSS'] = df['SSS'].fillna(9999).astype(float)
 
     # E	-> OK
+    df['E'] = df['E'][~df['E'].isin([9999, 99999])]
+    df['E'] = df['E'].fillna(9999).astype(int)
 
     # DL -> OK
+    df['DL'] = df['DL'][~df['DL'].isin([9999, 99999])]
+    df['DL'] = df['DL'].fillna(9999).astype(int)
 
     # DM -> OK
+    df['DM'] = df['DM'][~df['DM'].isin([9999, 99999])]
+    df['DM'] = df['DM'].fillna(9999).astype(int)
 
     # DH -> OK
+    df['DH'] = df['DH'][~df['DH'].isin([9999, 99999])]
+    df['DH'] = df['DH'].fillna(9999).astype(int)
 
     # appp	
-    #todo: 
+    # def funcappp(n):
+    #     if n == 0: a = 1
+    #     elif n == 1: a = 1
+    #     elif n == 2: a = 1
+    #     elif n == 3: a = 1
+    #     elif n == 4: a = 1
+    #     elif n == 5: a = -1
+    #     elif n == 6: a = -1
+    #     elif n == 7: a = -1
+    #     elif n == 8: a = -1
+    #     else: a = 9999
+    #     return(a)
+    
     def funcappp(n):
-        if n == 0: a = 1
-        elif n == 1: a = 1
-        elif n == 2: a = 1
-        elif n == 3: a = 1
-        elif n == 4: a = 1
-        elif n == 5: a = -1
-        elif n == 6: a = -1
-        elif n == 7: a = -1
-        elif n == 8: a = -1
+        if n < 5000: a = 1
+        elif n >= 5000: a = -1        
         else: a = 9999
         return(a)
     
-
-    # df['appp_help'] = df['appp'].fillna(9999).astype(str).apply(lambda x: x.zfill(4))
-    # df['appp_first_char'] = df['appp_help'].astype(str).str[0]
-    # df['appp_new'] = df['appp_first_char'].apply(funcappp)
+    #todo: kalau nilai awalannya 0 maka hasilnya tidak sesuai
+    df['appp_help'] = df['appp'][~df['appp'].isin([9999, 99999])] #df['appp'].fillna(9999).astype(str).apply(lambda x: x.zfill(4))
+    df['appp_help'] = df['appp_help'][df['appp_help'].notnull()].astype(str).apply(lambda x: x.zfill(4))      
+    # df['appp_first_char'] = df['appp_help'][df['appp_help'].notnull()].astype(str).str[0]
+    df['appp_new'] = df['appp_help'].str[1:].astype(float) * df['appp_help'].astype(float).apply(funcappp) / 10
+    df['appp_new'] = df['appp_new'].fillna(9999).astype(float)
+    # print(df[['appp', 
+    #     # 'appp_first_char', 
+    #     'appp_new'
+    #     ]])    
 
     # P24P24P24	
-    #todo:
+    df['P24P24P24'] = df['P24P24P24'][~df['P24P24P24'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(3))    
+    df.loc[df['P24P24P24'].astype(str).str[0] != '5', 'P24P24P24_new'] = pd.to_numeric(df['P24P24P24']) / 10
+    df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24_new'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10
+    #todo: kalau ada nilai kosong, masih error    
 
     # iW -> OK
+    df['iW'] = df['iW'][~df['iW'].isin([9999, 99999])]
+    df['iW'] = df['iW'].fillna(9999).astype(int)
 
     # iX -> OK
+    df['iX'] = df['iX'][~df['iX'].isin([9999, 99999])]
+    df['iX'] = df['iX'].fillna(9999).astype(int)
 
     # iR -> OK
+    df['iR'] = df['iR'][~df['iR'].isin([9999, 99999])]
+    df['iR'] = df['iR'].fillna(9999).astype(int)
 
     # iE -> OK
+    df['iE'] = df['iE'][~df['iE'].isin([9999, 99999])]
+    df['iE'] = df['iE'].fillna(9999).astype(int)
 
 
     print(df)
@@ -370,7 +526,7 @@ def funcVV(n):
     return(vv)
 
 def funcRRR(n):
-    if n == 0: rrr = 0
+    if n == 0: rrr = 0 #todo: apa sudah ok
     elif n == 1: rrr = 1
     elif n == 2: rrr = 2
     elif n == 3: rrr = 3
@@ -1359,21 +1515,7 @@ def funcRRR(n):
     elif n == 986: rrr = 986
     elif n == 987: rrr = 987
     elif n == 988: rrr = 988
-    elif n == 989: rrr = 989
-    elif n == 990: rrr = 990
-    elif n == 991: rrr = 991
-    elif n == 992: rrr = 992
-    elif n == 993: rrr = 993
-    elif n == 994: rrr = 994
-    elif n == 995: rrr = 995
-    elif n == 996: rrr = 996
-    elif n == 997: rrr = 997
-    elif n == 998: rrr = 998
-    #todo:
-    #todo:
-    #todo:
-    elif n == 988: rrr = 988
-    elif n == 989: rrr = 989
+    elif n == 989: rrr = 989 #todo: ini gimana
     elif n == 990: rrr = 8888 #todo: kalau TTU apa 8888?
     elif n == 991: rrr = 0.1
     elif n == 992: rrr = 0.2
