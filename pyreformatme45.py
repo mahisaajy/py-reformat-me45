@@ -10,12 +10,17 @@ def main():
     #https://stackoverflow.com/questions/24870306/how-to-check-if-a-column-exists-in-pandas
 
     #TdTdTd
+    df['TdTdTd'] = df['TdTdTd'][~df['TdTdTd'].isin([9999, 99999])]
+    df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ] / 10
+    df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(float)
     
-    df['TdTdTd'] = df['TdTdTd'][ ~df['TdTdTd'].isin([9999, 99999]) ].astype(float) / 10
-    df['TdTdTd'] = df['TdTdTd'].fillna(9999) # df['TdTdTd'].replace(np.nan, 9999)
-    # df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(int)
+    # df['TdTdTd'] = df['TdTdTd'][ ~df['TdTdTd'].isin([9999, 99999]) ].astype(float) / 10
+    # df['TdTdTd'] = df['TdTdTd'].fillna(9999) # df['TdTdTd'].replace(np.nan, 9999)
+    # # df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(int)
+    
 
     #N -> OK
+    df['N'] = df['N'][~df['N'].isin([9999, 99999])]
     df['N'] = df['N'].fillna(9999).astype(int)
 
     #dd
