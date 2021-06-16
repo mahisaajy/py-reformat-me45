@@ -3,7 +3,7 @@ import numpy as np
 
 def main():
 
-    df = pd.read_csv (r'sample/test ingest me45.csv')
+    df = pd.read_csv (r'sample/sample2.csv') #(r'sample/test ingest me45.csv')
     print(df)
 
     #todo: check if columen exist
@@ -67,9 +67,26 @@ def main():
     df['Nh'] = df['Nh'][~df['Nh'].isin([9999, 99999])]
     df['Nh'] = df['Nh'].fillna(9999).astype(int)
 
+    def funcCLCMCH(n):
+        if n == 0: clcmch = 0
+        elif n == 1: clcmch = 1
+        elif n == 2: clcmch = 2
+        elif n == 3: clcmch = 3
+        elif n == 4: clcmch = 4
+        elif n == 5: clcmch = 5
+        elif n == 6: clcmch = 6
+        elif n == 7: clcmch = 7
+        elif n == 8: clcmch = 8
+        elif n == 9: clcmch = 9
+        elif n == '/': clcmch = '//' 
+        elif n == '//': clcmch = '//' 
+        else: clcmch = 9999
+        return(clcmch)
+
     # CL -> OK
-    df['CL'] = df['CL'][~df['CL'].isin([9999, 99999])]
-    df['CL'] = df['CL'].fillna(9999).astype(int)
+    df['CL'] = df['CL'].apply(funcCLCMCH)
+    # df['CL'] = df['CL'][~df['CL'].isin([9999, 99999])]
+    # df['CL'] = df['CL'].fillna(9999).astype(int)
 
     # h	
     def funch(n):
@@ -82,21 +99,23 @@ def main():
         elif n == 6: h = 1500
         elif n == 7: h = 2000
         elif n == 8: h = 2500
-        elif n == 9: h = 9999 #todo: ini seharusnya diisi apa ya?
-        elif n == '/': h = '//' #todo: apakah perlu begini?
-        elif n == '//': h = '//' #todo: apa ini sudah ok?
+        elif n == 9: h = 2501 #dari hasil diskusi diisi 2501
+        elif n == '/': h = '//' 
+        elif n == '//': h = '//' 
         else: h = 9999
         return(h)
 
     df['h_new'] = df['h'].apply(funch)
 
     # CM -> OK
-    df['CM'] = df['CM'][~df['CM'].isin([9999, 99999])]
-    df['CM'] = df['CM'].fillna(9999).astype(int)
+    df['CM'] = df['CM'].apply(funcCLCMCH)
+    # df['CM'] = df['CM'][~df['CM'].isin([9999, 99999])]
+    # df['CM'] = df['CM'].fillna(9999).astype(int)
 
     # CH -> OK
-    df['CH'] = df['CH'][~df['CH'].isin([9999, 99999])]
-    df['CH'] = df['CH'].fillna(9999).astype(int)
+    # df['CH'] = df['CH'][~df['CH'].isin([9999, 99999])]
+    # df['CH'] = df['CH'].fillna(9999).astype(int)
+    df['CH'] = df['CH'].apply(funcCLCMCH)
 
     # Ns_1 -> OK
     df['Ns_1'] = df['Ns_1'][~df['Ns_1'].isin([9999, 99999])]
@@ -108,7 +127,7 @@ def main():
 
 
     def funcHshs(n):
-        if n == 0: hshs = 0        
+        if n == 0: hshs = 29 #dari hasil diskusi diisi 29        
         elif n == 1: hshs = 30
         elif n == 2: hshs = 60
         elif n == 3: hshs = 90
@@ -159,11 +178,11 @@ def main():
         elif n == 48: hshs = 1440
         elif n == 49: hshs = 1470
         elif n == 50: hshs = 1500
-        elif n == 51: hshs = 9999 #todo: apa sudah ok
-        elif n == 52: hshs = 9999 #todo: apa sudah ok
-        elif n == 53: hshs = 9999 #todo: apa sudah ok
-        elif n == 54: hshs = 9999 #todo: apa sudah ok
-        elif n == 55: hshs = 9999 #todo: apa sudah ok
+        elif n == 51: hshs = 9999 #dari hasil diskusi diisi 9999
+        elif n == 52: hshs = 9999 #dari hasil diskusi diisi 9999
+        elif n == 53: hshs = 9999 #dari hasil diskusi diisi 9999
+        elif n == 54: hshs = 9999 #dari hasil diskusi diisi 9999
+        elif n == 55: hshs = 9999 #dari hasil diskusi diisi 9999
         elif n == 56: hshs = 1800
         elif n == 57: hshs = 2100
         elif n == 58: hshs = 2400
@@ -197,17 +216,17 @@ def main():
         elif n == 86: hshs = 18000
         elif n == 87: hshs = 19500
         elif n == 88: hshs = 21000
-        elif n == 89: hshs = 21000 #todo: apa sudah ok
-        elif n == 90: hshs = 9999 #todo: apa sudah ok
-        elif n == 91: hshs = 9999 #todo: apa sudah ok
-        elif n == 92: hshs = 9999 #todo: apa sudah ok
-        elif n == 93: hshs = 9999 #todo: apa sudah ok
-        elif n == 94: hshs = 9999 #todo: apa sudah ok
-        elif n == 95: hshs = 9999 #todo: apa sudah ok
-        elif n == 96: hshs = 9999 #todo: apa sudah ok
-        elif n == 97: hshs = 9999 #todo: apa sudah ok
-        elif n == 98: hshs = 9999 #todo: apa sudah ok
-        elif n == 99: hshs = 9999 #todo: apa sudah ok
+        elif n == 89: hshs = 21001 #dari hasil diskusi diisi 21001
+        elif n == 90: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 91: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 92: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 93: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 94: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 95: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 96: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 97: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 98: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
+        elif n == 99: hshs = 9999 #dari hasil diskusi ini adalah pengamatan laut, diisi 9999
         else: hshs = 9999
         return(hshs)
 
@@ -339,9 +358,15 @@ def main():
     #     ]])    
 
     # P24P24P24	
+    print(df[['P24P24P24']])
+    df['P24P24P24'] = df['P24P24P24'].fillna(9999)
+    # print(df[['P24P24P24']])
     df['P24P24P24'] = df['P24P24P24'][~df['P24P24P24'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(3))    
-    df.loc[df['P24P24P24'].astype(str).str[0] != '5', 'P24P24P24_new'] = pd.to_numeric(df['P24P24P24']) / 10
-    df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24_new'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10
+    
+    df.loc[df['P24P24P24'].astype(str).str[0] != '5', 'P24P24P24'] = pd.to_numeric(df['P24P24P24']) / 10
+    df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10    
+    df['P24P24P24'] = df['P24P24P24'].fillna(9999)
+    print(df[['P24P24P24']])
     #todo: kalau ada nilai kosong, masih error    
 
     # iW -> OK
@@ -363,6 +388,7 @@ def main():
 
     print(df)
     df.info(verbose=True)
+    df.to_csv('testzzz.csv')
     # print(df.dtypes)
 
 
@@ -427,7 +453,7 @@ def main():
 
 
 def funcVV(n):
-    if n == 0: vv = 0
+    if n == 0: vv = 0.09 #dari hasil diskusi diisi 0.09
     elif n == 1: vv = 0.1    
     elif n == 2: vv = 0.2
     elif n == 3: vv = 0.3
@@ -478,11 +504,11 @@ def funcVV(n):
     elif n == 48: vv = 4.8
     elif n == 49: vv = 4.9
     elif n == 50: vv = 5
-    elif n == 51: vv = 9999
-    elif n == 52: vv = 9999
-    elif n == 53: vv = 9999
-    elif n == 54: vv = 9999
-    elif n == 55: vv = 9999
+    elif n == 51: vv = 9999 #dari hasil diskusi diisi 9999
+    elif n == 52: vv = 9999 #dari hasil diskusi diisi 9999
+    elif n == 53: vv = 9999 #dari hasil diskusi diisi 9999
+    elif n == 54: vv = 9999 #dari hasil diskusi diisi 9999
+    elif n == 55: vv = 9999 #dari hasil diskusi diisi 9999
     elif n == 56: vv = 6
     elif n == 57: vv = 7
     elif n == 58: vv = 8
@@ -516,22 +542,22 @@ def funcVV(n):
     elif n == 86: vv = 60
     elif n == 87: vv = 65
     elif n == 88: vv = 70
-    elif n == 89: vv = 9999 #todo:
-    elif n == 90: vv = 9999 #todo:
-    elif n == 91: vv = 9999 #todo:
-    elif n == 92: vv = 9999 #todo:
-    elif n == 93: vv = 9999 #todo:
-    elif n == 94: vv = 1
-    elif n == 95: vv = 2
-    elif n == 96: vv = 4
-    elif n == 97: vv = 10
-    elif n == 98: vv = 20
-    elif n == 99: vv = 9999 #todo:
+    elif n == 89: vv = 71 #dari hasil diskusi diisi 71
+    elif n == 90: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 91: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 92: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 93: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 94: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 95: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 96: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 97: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 98: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
+    elif n == 99: vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
     else: vv = 9999
     return(vv)
 
 def funcRRR(n):
-    if n == 0: rrr = 0 #todo: apa sudah ok
+    if n == 0: rrr = 9999 #dari hasil diskusi diisi 9999
     elif n == 1: rrr = 1
     elif n == 2: rrr = 2
     elif n == 3: rrr = 3
@@ -1520,8 +1546,8 @@ def funcRRR(n):
     elif n == 986: rrr = 986
     elif n == 987: rrr = 987
     elif n == 988: rrr = 988
-    elif n == 989: rrr = 989 #todo: ini gimana
-    elif n == 990: rrr = 8888 #todo: kalau TTU apa 8888?
+    elif n == 989: rrr = 989 #dari hasil diskusi diisi 999
+    elif n == 990: rrr = 8888 #dari hasil diskusi diisi 8888
     elif n == 991: rrr = 0.1
     elif n == 992: rrr = 0.2
     elif n == 993: rrr = 0.3
