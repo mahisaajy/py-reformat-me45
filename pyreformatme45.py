@@ -1,9 +1,30 @@
 import pandas as pd
 import numpy as np
+import os
+from os import listdir
+from datetime import datetime
+
+def find_csv_filenames( path_to_dir, suffix=".csv" ):
+    filenames = listdir(path_to_dir)
+    return [ filename for filename in filenames if filename.endswith( suffix ) ]
 
 def main():
+    basepath = 'process/'
+    # with os.scandir(basepath) as entries:
+    #     for entry in entries:
+    #         if entry.is_file():
+    #             # print(entry.name)
+    #             reformat(entry.name)
 
-    df = pd.read_csv (r'sample/sample2.csv') #(r'sample/test ingest me45.csv')
+    filenames = find_csv_filenames(basepath)
+    for name in filenames:
+        # print name
+        reformat(name)
+
+
+def reformat(filename):
+
+    df = pd.read_csv (r'process/'+filename) #(r'sample/test ingest me45.csv')
     print(df)
 
     #todo: check if columen exist
@@ -53,15 +74,15 @@ def main():
     # df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))    
     df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])]
     df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
-    df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF_new'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
-    df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF_new'] = pd.to_numeric(df['QFF']) / 10  
-    df['QFF_new'] = df['QFF_new'].fillna(9999).astype(float)
+    df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
+    df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10  
+    df['QFF'] = df['QFF'].fillna(9999).astype(float)
     # print(df[['QFF', 'QFF_new']])   
 
     # TtTtTt	
     df['TtTtTt'] = df['TtTtTt'][~df['TtTtTt'].isin([9999, 99999])]
     df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ] / 10
-    df['TtTtTt_new'] = df['TtTtTt'].fillna(9999).astype(float)
+    df['TtTtTt'] = df['TtTtTt'].fillna(9999).astype(float)
 
     # Nh -> OK
     df['Nh'] = df['Nh'][~df['Nh'].isin([9999, 99999])]
@@ -105,7 +126,7 @@ def main():
         else: h = 9999
         return(h)
 
-    df['h_new'] = df['h'].apply(funch)
+    df['h'] = df['h'].apply(funch)
 
     # CM -> OK
     df['CM'] = df['CM'].apply(funcCLCMCH)
@@ -231,7 +252,7 @@ def main():
         return(hshs)
 
     # Hshs_1	
-    df['Hshs_1_new'] = df['Hshs_1'].apply(funcHshs)
+    df['Hshs_1'] = df['Hshs_1'].apply(funcHshs)
 
     # Ns_2 -> OK
     df['Ns_2'] = df['Ns_2'][~df['Ns_2'].isin([9999, 99999])]
@@ -242,7 +263,7 @@ def main():
     df['C_2'] = df['C_2'].fillna(9999).astype(int)
 
     # Hshs_2	
-    df['Hshs_2_new'] = df['Hshs_2'].apply(funcHshs)
+    df['Hshs_2'] = df['Hshs_2'].apply(funcHshs)
 
     # Ns_3 -> OK
     df['Ns_3'] = df['Ns_3'][~df['Ns_3'].isin([9999, 99999])]
@@ -253,7 +274,7 @@ def main():
     df['C_3'] = df['C_3'].fillna(9999).astype(int)
 
     # Hshs_3	
-    df['Hshs_3_new'] = df['Hshs_3'].apply(funcHshs)
+    df['Hshs_3'] = df['Hshs_3'].apply(funcHshs)
 
     # e	-> OK
     df['e'] = df['e'][~df['e'].isin([9999, 99999])]
@@ -266,9 +287,9 @@ def main():
     # QFE
     df['QFE'] = df['QFE'][~df['QFE'].isin([9999, 99999])]
     df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(str).apply(lambda x: x.zfill(4))        
-    df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE_new'] = (10000 + pd.to_numeric(df['QFE'])) / 10
-    df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE_new'] = pd.to_numeric(df['QFE']) / 10  
-    df['QFE_new'] = df['QFE_new'].fillna(9999).astype(float)   
+    df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10
+    df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE'] = pd.to_numeric(df['QFE']) / 10  
+    df['QFE'] = df['QFE'].fillna(9999).astype(float)   
 
     # df['QFE_help'] = df['QFE'].astype(str).apply(lambda x: x.zfill(4))
     # df['QFE_new'] = pd.to_numeric( str(1) + df['QFE_help']) / 10
@@ -276,11 +297,11 @@ def main():
     # TwTwTw	
     df['TwTwTw'] = df['TwTwTw'][~df['TwTwTw'].isin([9999, 99999])]
     df['TwTwTw'] = df['TwTwTw'][ df['TwTwTw'].notnull() ] / 10
-    df['TwTwTw_new'] = df['TwTwTw'].fillna(9999).astype(float)
+    df['TwTwTw'] = df['TwTwTw'].fillna(9999).astype(float)
 
     # RRR	
     # panduan hal 24
-    df['RRR_new'] = df['RRR'].apply(funcRRR)
+    df['RRR'] = df['RRR'].apply(funcRRR)
 
     # tR -> OK
     df['tR'] = df['tR'][~df['tR'].isin([9999, 99999])]
@@ -289,12 +310,12 @@ def main():
     # TxTxTx
     df['TxTxTx'] = df['TxTxTx'][~df['TxTxTx'].isin([9999, 99999])]
     df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ] / 10
-    df['TxTxTx_new'] = df['TxTxTx'].fillna(9999).astype(float)
+    df['TxTxTx'] = df['TxTxTx'].fillna(9999).astype(float)
 
     # TnTnTn	
     df['TnTnTn'] = df['TnTnTn'][~df['TnTnTn'].isin([9999, 99999])]
     df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ] / 10
-    df['TnTnTn_new'] = df['TnTnTn'].fillna(9999).astype(float)
+    df['TnTnTn'] = df['TnTnTn'].fillna(9999).astype(float)
 
     # EEE	
     df['EEE'] = df['EEE'][~df['EEE'].isin([9999, 99999])]
@@ -350,8 +371,10 @@ def main():
     df['appp_help'] = df['appp'][~df['appp'].isin([9999, 99999])] #df['appp'].fillna(9999).astype(str).apply(lambda x: x.zfill(4))
     df['appp_help'] = df['appp_help'][df['appp_help'].notnull()].astype(str).apply(lambda x: x.zfill(4))      
     # df['appp_first_char'] = df['appp_help'][df['appp_help'].notnull()].astype(str).str[0]
-    df['appp_new'] = df['appp_help'].str[1:].astype(float) * df['appp_help'].astype(float).apply(funcappp) / 10
-    df['appp_new'] = df['appp_new'].fillna(9999).astype(float)
+    df['appp'] = df['appp_help'].str[1:].astype(float) * df['appp_help'].astype(float).apply(funcappp) / 10
+    df['appp'] = df['appp'].fillna(9999).astype(float)
+
+    del df['appp_help']
     # print(df[['appp', 
     #     # 'appp_first_char', 
     #     'appp_new'
@@ -386,9 +409,22 @@ def main():
     df['iE'] = df['iE'].fillna(9999).astype(int)
 
 
+
+    #######
+    # datetime object containing current date and time
+    now = datetime.now()
+    
+    # print("now =", now)
+
+    # dd/mm/YY H:M:S
+    dt_string = now.strftime("%Y%m%d%H%M")
+    # print("date and time =", dt_string)	
+    #####
+
+
     print(df)
     df.info(verbose=True)
-    df.to_csv('testzzz.csv')
+    df.to_csv('output/'+'importME45_'+dt_string+' - '+filename, index=False)
     # print(df.dtypes)
 
 
