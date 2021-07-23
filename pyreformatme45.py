@@ -27,10 +27,17 @@ def main():
 
 def reformat(filename):
 
-    NA_VALUES = [9999, 99999, '/', '//', '\\']
+    NA_VALUES = [9999, 99999, '/', '//', '///', '\\', '.', '#REF!', '#VALUE!', 'STNR', '#N/A', '#', 'N', '/A', '`', '*', 'Z', 'A', 'C', 'AC', '*/', '+', 'CI', '0S', 'y', 'BN ', 'CNS SL RA', 'CLD DECR', '24/', 'r43', 'ALSE', 'cdd', '26/', '30/', '31/', '32/', 'L' , 'x', 'E', '0`', '3            tidak ada hujan']
 
-    df = pd.read_csv (r'process/'+filename) #(r'sample/test ingest me45.csv')
+    df = pd.read_csv (r'process/'+filename, 
+    skipinitialspace = True
+    ) #(r'sample/test ingest me45.csv')
     print(df)
+
+    # Remove leading and trailing characters.
+    # df.columns = df.columns.str.strip()
+
+    # df['appp'] = df['appp'].str.replace(' ', '')
 
     #todo: check if columen exist
     #https://stackoverflow.com/questions/24870306/how-to-check-if-a-column-exists-in-pandas
@@ -347,10 +354,36 @@ def reformat(filename):
     df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ].astype(int) / 10 # df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ] / 10
     df['TnTnTn'] = df['TnTnTn'].fillna(9999).astype(float)
 
-    # EEE	
+    # EEE
+    # print(df['EEE']);
+    # print(~df['EEE'].isin(NA_VALUES))
     df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
-    df['EEE'] = df['EEE'][ df['EEE'].notnull() ].astype(int) / 10 # df['EEE'] = df['EEE'][ df['EEE'].notnull() ] / 10
+    print(df['EEE'])
+    # df['EEE_filter_number']  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
+
+    # df['EEE_integer_only'] = df['EEE'][df.EEE.astype(str).str.isdigit()] 
+    # df['EEE'] = (df['EEE_filter_number'] % 1  == 0).all()
+    # print(df['EEE'])
+    # print(df['EEE']);
+    # mask  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
+    # print(mask)
+    # print(df['EEE'])
+    # print(df['EEE_filter_number'])
+    # mask = df['EEE'].apply(lambda x: x.is_integer())
+    # df[pd.to_numeric(df.SIC, errors='coerce').notnull()]
+
+    # df['EEE'] = df['EEE'][mask] / 10 
+    # (df[col] % 1  == 0).all()
+
+    #skip floating value
+    # df['EEE'] = df['EEE'][ df.EEE.astype(str).str.isdigit() ].astype(int) / 10 # df['EEE'] = df['EEE'][ df['EEE'].notnull() ] / 10
+
+    df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = pd.to_numeric(df['EEE']) / 10
+    # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = df['EEE'].astype(float)
+    # df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
+
     df['EEE'] = df['EEE'].fillna(9999).astype(float)
+    print(df['EEE'])
 
     # F24F24F24F24	-> OK #todo: dicek lagi
     df['F24F24F24F24'] = df['F24F24F24F24'][~df['F24F24F24F24'].isin(NA_VALUES)]
@@ -411,7 +444,7 @@ def reformat(filename):
     #     ]])    
 
     # P24P24P24	
-    print(df[['P24P24P24']])
+    # print(df[['P24P24P24']])
     df['P24P24P24'] = df['P24P24P24'].fillna(9999)
     # print(df[['P24P24P24']])
     df['P24P24P24'] = df['P24P24P24'][~df['P24P24P24'].isin(NA_VALUES)].astype(str).apply(lambda x: x.zfill(3))    
@@ -419,7 +452,7 @@ def reformat(filename):
     df.loc[df['P24P24P24'].astype(str).str[0] != '5', 'P24P24P24'] = pd.to_numeric(df['P24P24P24']) / 10
     df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
     df['P24P24P24'] = df['P24P24P24'].fillna(9999)
-    print(df[['P24P24P24']])
+    # print(df[['P24P24P24']])
     #todo: kalau ada nilai kosong, masih error    
 
     # iW -> OK
