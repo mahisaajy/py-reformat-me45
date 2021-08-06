@@ -27,10 +27,11 @@ def main():
 
 def reformat(filename):
 
-    NA_VALUES = [9999, 99999, '/', '//', '///', '\\', '.', '#REF!', '#VALUE!', 'STNR', '#N/A', '#', 'N', '/A', '`', '*', 'Z', 'A', 'C', 'AC', '*/', '+', 'CI', '0S', 'y', 'BN ', 'CNS SL RA', 'CLD DECR', '24/', 'r43', 'ALSE', 'cdd', '26/', '30/', '31/', '32/', 'L' , 'x', 'E', '0`', '3            tidak ada hujan']
+    NA_VALUES = [9999, 99999, '/', '//', '///', '////', '\\', '.', '#REF!', '#VALUE!', 'STNR', '#N/A', '#', 'N', '/A', '`', '*', 'Z', 'A', 'C', 'AC', '*/', '+', 'CI', '0S', 'y', 'BN ', 'CNS SL RA', 'CLD DECR', 'ALSE', 'cdd', 'L' , 'x', 'E', '0`', '3            tidak ada hujan', 'FALSE']
 
     df = pd.read_csv (r'process/'+filename, 
-    skipinitialspace = True
+    skipinitialspace = True,
+    # sep=';'
     ) #(r'sample/test ingest me45.csv')
     print(df)
 
@@ -43,64 +44,207 @@ def reformat(filename):
     #https://stackoverflow.com/questions/24870306/how-to-check-if-a-column-exists-in-pandas
 
     #TdTdTd
+    ## BEST METHOD
     df['TdTdTd'] = df['TdTdTd'][~df['TdTdTd'].isin(NA_VALUES)]
-    df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ].astype(int) / 10 # df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ] / 10
-    df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(float)
+    df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ].astype(int) / 10    
+    df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(float)    
+
+    ## TRIAL
+    # df['TdTdTd'] = df['TdTdTd'][~df['TdTdTd'].isin(NA_VALUES)]
+    # df.loc[df['TdTdTd'].astype(str).str.isdecimal() == True, 'TdTdTd'] = pd.to_numeric(df['TdTdTd']) / 10 # df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ].astype(int) / 10 # df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ] / 10
+    # df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(float)    
     
     # df['TdTdTd'] = df['TdTdTd'][ ~df['TdTdTd'].isin([9999, 99999]) ].astype(float) / 10
     # df['TdTdTd'] = df['TdTdTd'].fillna(9999) # df['TdTdTd'].replace(np.nan, 9999)
     # # df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(int)
     
+    ##########
+    ##### N
+    ##########
 
-    #N -> OK
-    df['N'] = df['N'][~df['N'].isin(NA_VALUES)]
-    df['N'] = df['N'].fillna(9999).astype(int)
+    def funcN(n):
+        if n == '0': result = 0
+        elif n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        elif n == '7': result = 7
+        elif n == '8': result = 8
+        elif n == '9': result = 9
+        elif n == '/': result = '//' 
+        elif n == '//': result = '//' 
+        else: result = 9999
+        return(result)
+    ## OLD METHOD
+    # df['N'] = df['N'][~df['N'].isin(NA_VALUES)]
+    # df['N'] = df['N'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['N'] = df['N'].astype('str').apply(funcN)
 
-    #dd
-    df['dd'] = df['dd'][~df['dd'].isin(NA_VALUES)] #.astype(str)
-    df['dd'] = df['dd'][ df['dd'].notnull() ].astype(int) * 10 # df['dd'] = df['dd'][ df['dd'].notnull() ] * 10
-    df['dd'] = df['dd'].fillna(9999).astype(int)
+    ##########
+    ##### dd
+    ##########
 
-    # df['dd'] = pd.to_numeric( df['dd'].astype(str) + str(0) )
+    def funcdd(n):
+        if n == '0': dd = 0 #dari hasil diskusi diisi 29        
+        elif n == '1': dd = 1
+        elif n == '2': dd = 2
+        elif n == '3': dd = 3
+        elif n == '4': dd = 4
+        elif n == '5': dd = 5
+        elif n == '6': dd = 6
+        elif n == '7': dd = 7
+        elif n == '8': dd = 8
+        elif n == '9': dd = 9
+        elif n == '10': dd = 10
+        elif n == '11': dd = 11
+        elif n == '12': dd = 12
+        elif n == '13': dd = 13
+        elif n == '14': dd = 14
+        elif n == '15': dd = 15
+        elif n == '16': dd = 16
+        elif n == '17': dd = 17
+        elif n == '18': dd = 18
+        elif n == '19': dd = 19
+        elif n == '20': dd = 20
+        elif n == '21': dd = 21
+        elif n == '22': dd = 22
+        elif n == '23': dd = 23
+        elif n == '24': dd = 24
+        elif n == '25': dd = 25
+        elif n == '26': dd = 26
+        elif n == '27': dd = 27
+        elif n == '28': dd = 28
+        elif n == '29': dd = 29
+        elif n == '30': dd = 30
+        elif n == '31': dd = 31
+        elif n == '32': dd = 32
+        elif n == '33': dd = 33
+        elif n == '34': dd = 34
+        elif n == '35': dd = 35
+        elif n == '36': dd = 36
+        elif n == '99': dd = 99        
+        else: dd = 9999
+        return(dd)
 
-    #ff -> OK
+    ## OLD METHOD
+    # df['dd'] = df['dd'][~df['dd'].isin(NA_VALUES)] #.astype(str)
+    # df['dd'] = df['dd'][ df['dd'].notnull() ].astype(int) * 10 # df['dd'] = df['dd'][ df['dd'].notnull() ] * 10
+    # df['dd'] = df['dd'].fillna(9999).astype(int)
+    # # df['dd'] = pd.to_numeric( df['dd'].astype(str) + str(0) )
+    ## NEW METHOD
+    df['dd'] = df['dd'].astype('str').apply(funcdd)
+    # df['dd'] = df['dd'][ ~df['dd'].isin(['9999']) ].astype(int) * 10
+    df.loc[df['dd'] != 9999, 'dd'] = pd.to_numeric(df['dd']) * 10      
+
+    
+    ##########
+    ##### ff
+    ##########
+
     df['ff'] = df['ff'][~df['ff'].isin(NA_VALUES)]
     df['ff'] = df['ff'].fillna(9999).astype(int)
 
-    #VV
+    ##########
+    ##### VV
+    ##########
+
     df['VV'] = df['VV'].astype('str').apply(funcVV)
 
-    # ww
+    ##########
+    ##### ww
+    ##########
+
+    ## OLD METHOD
+    # df['ww'] = df['ww'][~df['ww'].isin(NA_VALUES)]
+    # df['ww'] = df['ww'].fillna(9999).astype(int)
+    ## NEW METHOD
     df['ww'] = df['ww'][~df['ww'].isin(NA_VALUES)]
     df['ww'] = df['ww'].fillna(9999).astype(int)
+    df['ww'] = df['ww'].astype('str').apply(funcww)
 
-    # W1
-    df['W1'] = df['W1'][~df['W1'].isin(NA_VALUES)]
-    df['W1'] = df['W1'].fillna(9999).astype(int)
 
-    # W2
-    df['W2'] = df['W2'][~df['W2'].isin(NA_VALUES)]
-    df['W2'] = df['W2'].fillna(9999).astype(int)
+    def funcW1W2(n):
+        if n == '0': result = 0
+        elif n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        elif n == '7': result = 7
+        elif n == '8': result = 8
+        elif n == '9': result = 9        
+        else: result = 9999
+        return(result)
+
+    ##########
+    ##### W1
+    ##########
+
+    ## OLD METHOD
+    # df['W1'] = df['W1'][~df['W1'].isin(NA_VALUES)]
+    # df['W1'] = df['W1'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['W1'] = df['W1'].astype('str').apply(funcW1W2)
+
+    ##########
+    ##### W2
+    ##########
+
+    ## OLD METHOD
+    # df['W2'] = df['W2'][~df['W2'].isin(NA_VALUES)]
+    # df['W2'] = df['W2'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['W2'] = df['W2'].astype('str').apply(funcW1W2)
 
     # QFF
     # df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))    
+    # df['QFF'] = df["QFF"].str.replace("'","");
     df['QFF'] = df['QFF'][~df['QFF'].isin(NA_VALUES)]
     df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
     df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
     df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10  
     df['QFF'] = df['QFF'].fillna(9999).astype(float)
     # print(df[['QFF', 'QFF_new']])   
+    #todo kalau ada data kosong maka hasilnya jadi ga bener
 
     # TtTtTt	
     df['TtTtTt'] = df['TtTtTt'][~df['TtTtTt'].isin(NA_VALUES)]
     df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ].astype(int) / 10 # df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ] / 10
     df['TtTtTt'] = df['TtTtTt'].fillna(9999).astype(float)
 
-    # Nh -> OK
-    df['Nh'] = df['Nh'][~df['Nh'].isin(NA_VALUES)]
-    df['Nh'] = df['Nh'].fillna(9999).astype(int)
+    def funcNh(n):
+        if n == '0': result = 0
+        elif n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        elif n == '7': result = 7
+        elif n == '8': result = 8
+        elif n == '9': result = 9
+        elif n == '/': result = '//' 
+        elif n == '//': result = '//' 
+        else: result = 9999
+        return(result)
 
-    def funcCLCMCH(n):
+    ##########
+    ##### Nh
+    ##########
+
+    ## OLD METHOD
+    # df['Nh'] = df['Nh'][~df['Nh'].isin(NA_VALUES)]
+    # df['Nh'] = df['Nh'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['Nh'] = df['Nh'].astype('str').apply(funcNh)
+
+
+
+    def funcCLCMCHNsC(n):
         if n == '0': clcmch = 0
         elif n == '1': clcmch = 1
         elif n == '2': clcmch = 2
@@ -116,10 +260,16 @@ def reformat(filename):
         else: clcmch = 9999
         return(clcmch)
 
-    # CL -> OK
-    df['CL'] = df['CL'].astype('str').apply(funcCLCMCH)
+    ###########
+    ##### CL
+    ###########
+
+    ## OLD METHOD
     # df['CL'] = df['CL'][~df['CL'].isin([9999, 99999])]
     # df['CL'] = df['CL'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['CL'] = df['CL'].astype('str').apply(funcCLCMCHNsC)
+    
 
     # h	
     def funch(n):
@@ -140,42 +290,60 @@ def reformat(filename):
 
     df['h'] = df['h'].astype('str').apply(funch)
 
-    # CM -> OK
-    df['CM'] = df['CM'].astype('str').apply(funcCLCMCH)
+    ##########
+    ##### CM
+    ##########
+
+    ## OLD METHOD
     # df['CM'] = df['CM'][~df['CM'].isin([9999, 99999])]
     # df['CM'] = df['CM'].fillna(9999).astype(int)
+    # NEW METHOD
+    df['CM'] = df['CM'].astype('str').apply(funcCLCMCHNsC)
+    
+    ##########
+    ##### CH
+    ##########
 
-    # CH -> OK
+    ## OLD METHOD
     # df['CH'] = df['CH'][~df['CH'].isin([9999, 99999])]
     # df['CH'] = df['CH'].fillna(9999).astype(int)
-    df['CH'] = df['CH'].astype('str').apply(funcCLCMCH)
+    ## NEW METHOD
+    df['CH'] = df['CH'].astype('str').apply(funcCLCMCHNsC)
 
-    # Ns_1 -> OK
-    df['Ns_1'] = df['Ns_1'][~df['Ns_1'].isin(NA_VALUES)]
-    df['Ns_1'] = df['Ns_1'].fillna(9999).astype(int)
+    ##########
+    ##### Ns_1
 
+    ## OLD METHOD
+    # df['Ns_1'] = df['Ns_1'][~df['Ns_1'].isin(NA_VALUES)]
+    # df['Ns_1'] = df['Ns_1'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['Ns_1'] = df['Ns_1'].astype('str').apply(funcCLCMCHNsC)
 
-    def funcC(n):
-        if n == '0': c = 0
-        elif n == '1': c = 1
-        elif n == '2': c = 2
-        elif n == '3': c = 3
-        elif n == '4': c = 4
-        elif n == '5': c = 5
-        elif n == '6': c = 6
-        elif n == '7': c = 7
-        elif n == '8': c = 8
-        elif n == '9': c = 9
-        elif n == '/': c = '//' #todo: nanti dipastikan lagi ke LDM apa ada tanda garis miring
-        elif n == '//': c = '//' #todo: nanti dipastikan lagi ke LDM apa ada tanda garis miring
-        else: c = 9999
-        return(c)
+    # def funcC(n):
+    #     if n == '0': c = 0
+    #     elif n == '1': c = 1
+    #     elif n == '2': c = 2
+    #     elif n == '3': c = 3
+    #     elif n == '4': c = 4
+    #     elif n == '5': c = 5
+    #     elif n == '6': c = 6
+    #     elif n == '7': c = 7
+    #     elif n == '8': c = 8
+    #     elif n == '9': c = 9
+    #     elif n == '/': c = '//' #todo: nanti dipastikan lagi ke LDM apa ada tanda garis miring
+    #     elif n == '//': c = '//' #todo: nanti dipastikan lagi ke LDM apa ada tanda garis miring
+    #     else: c = 9999
+    #     return(c)
 
-    # C_1 -> OK
+    ##########
+    ##### C_1
+    ##########
+
+    ## OLD METHOD
     # df['C_1'] = df['C_1'][~df['C_1'].isin([9999, 99999])]
     # df['C_1'] = df['C_1'].fillna(9999).astype(int)
-
-    df['C_1'] = df['C_1'].astype('str').apply(funcC)
+    ## NEW METHOD
+    df['C_1'] = df['C_1'].astype('str').apply(funcCLCMCHNsC) # df['C_1'].astype('str').apply(funcC)
 
 
 
@@ -284,44 +452,96 @@ def reformat(filename):
         else: hshs = 9999
         return(hshs)
 
-    # Hshs_1	
+    ##########
+    ##### Hshs_1	
+    ##########
     df['Hshs_1'] = df['Hshs_1'].astype('str').apply(funcHshs)
 
-    # Ns_2 -> OK
-    df['Ns_2'] = df['Ns_2'][~df['Ns_2'].isin(NA_VALUES)]
-    df['Ns_2'] = df['Ns_2'].fillna(9999).astype(int)
+    ##########
+    ##### Ns_2
+    ##########
 
-    # C_2 -> OK
+    ## OLD METHOD
+    # df['Ns_2'] = df['Ns_2'][~df['Ns_2'].isin(NA_VALUES)]
+    # df['Ns_2'] = df['Ns_2'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['Ns_2'] = df['Ns_2'].astype('str').apply(funcCLCMCHNsC)
+
+    ##########
+    ##### C_2
+    ##########
+
+    ## OLD METHOD
     # df['C_2'] = df['C_2'][~df['C_2'].isin([9999, 99999])]
     # df['C_2'] = df['C_2'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['C_2'] = df['C_2'].astype('str').apply(funcCLCMCHNsC) # df['C_2'].apply(funcC)
 
-    df['C_2'] = df['C_2'].apply(funcC)
+    ##########
+    ##### Hshs_2	
+    ##########
 
-    # Hshs_2	
     df['Hshs_2'] = df['Hshs_2'].apply(funcHshs)
 
-    # Ns_3 -> OK
-    df['Ns_3'] = df['Ns_3'][~df['Ns_3'].isin(NA_VALUES)]
-    df['Ns_3'] = df['Ns_3'].fillna(9999).astype(int)
+    ##########
+    ##### Ns_3
+    ##########
 
-    # C_3 -> OK
+    ## OLD METHOD
+    # df['Ns_3'] = df['Ns_3'][~df['Ns_3'].isin(NA_VALUES)]
+    # df['Ns_3'] = df['Ns_3'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['Ns_3'] = df['Ns_3'].astype('str').apply(funcCLCMCHNsC)
+
+    ##########
+    ##### C_3
+    ##########
+    
+    ## OLD METHOD
     # df['C_3'] = df['C_3'][~df['C_3'].isin([9999, 99999])]
     # df['C_3'] = df['C_3'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['C_3'] = df['C_3'].astype('str').apply(funcCLCMCHNsC) # df['C_3'].apply(funcC)
 
-    df['C_3'] = df['C_3'].apply(funcC)
+    ##########
+    ##### Hshs_3	
+    ##########
 
-    # Hshs_3	
     df['Hshs_3'] = df['Hshs_3'].apply(funcHshs)
 
-    # e	-> OK
-    df['e'] = df['e'][~df['e'].isin(NA_VALUES)]
-    df['e'] = df['e'].fillna(9999).astype(int)
+    def funce(n):
+        if n == '0': result = 0
+        elif n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        elif n == '7': result = 7
+        elif n == '8': result = 8
+        elif n == '9': result = 9        
+        else: result = 9999
+        return(result)
 
-    # UU -> OK
+    ##########
+    ##### e
+    ##########
+
+    ## OLD METHOD
+    # df['e'] = df['e'][~df['e'].isin(NA_VALUES)]
+    # df['e'] = df['e'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['e'] = df['e'].astype('str').apply(funce)
+
+    ##########
+    ##### UU
+    ##########
+
     df['UU'] = df['UU'][~df['UU'].isin(NA_VALUES)]
     df['UU'] = df['UU'].fillna(9999).astype(int)
 
     # QFE
+    # df['QFE'] = df["QFE"].str.replace("'","");
     df['QFE'] = df['QFE'][~df['QFE'].isin(NA_VALUES)]
     df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(str).apply(lambda x: x.zfill(4))        
     df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10 # df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10
@@ -340,13 +560,38 @@ def reformat(filename):
     # panduan hal 24
     df['RRR'] = df['RRR'].astype('str').apply(funcRRR)
 
-    # tR -> OK
-    df['tR'] = df['tR'][~df['tR'].isin(NA_VALUES)]
-    df['tR'] = df['tR'].fillna(9999).astype(int)
+
+    def functR(n):        
+        if n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        elif n == '7': result = 7
+        elif n == '8': result = 8
+        elif n == '9': result = 9        
+        else: result = 9999
+        return(result)
+
+    ##########
+    ##### tR
+    ##########
+
+    ## OLD METHOD
+    # df['tR'] = df['tR'][~df['tR'].isin(NA_VALUES)]
+    # df['tR'] = df['tR'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['tR'] = df['tR'].astype('str').apply(functR)
+
+
+    
 
     # TxTxTx
-    df['TxTxTx'] = df['TxTxTx'][~df['TxTxTx'].isin(NA_VALUES)]
+    df['TxTxTx'] = df['TxTxTx'][~df['TxTxTx'].isin(NA_VALUES)]    
+    # df.loc[df['TxTxTx'].astype(str).map(len) <= 3, 'TxTxTx'] = pd.to_numeric(df['TxTxTx']) / 10
     df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ].astype(int) / 10 # df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ] / 10
+    # df.loc[df['TxTxTx'].astype(str).str.isdecimal() == True, 'TxTxTx'] = pd.to_numeric(df['TxTxTx']) / 10
     df['TxTxTx'] = df['TxTxTx'].fillna(9999).astype(float)
 
     # TnTnTn	
@@ -355,35 +600,45 @@ def reformat(filename):
     df['TnTnTn'] = df['TnTnTn'].fillna(9999).astype(float)
 
     # EEE
-    # print(df['EEE']);
-    # print(~df['EEE'].isin(NA_VALUES))
+    ## BEST METHOD
     df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
-    print(df['EEE'])
-    # df['EEE_filter_number']  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
-
-    # df['EEE_integer_only'] = df['EEE'][df.EEE.astype(str).str.isdigit()] 
-    # df['EEE'] = (df['EEE_filter_number'] % 1  == 0).all()
-    # print(df['EEE'])
-    # print(df['EEE']);
-    # mask  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
-    # print(mask)
-    # print(df['EEE'])
-    # print(df['EEE_filter_number'])
-    # mask = df['EEE'].apply(lambda x: x.is_integer())
-    # df[pd.to_numeric(df.SIC, errors='coerce').notnull()]
-
-    # df['EEE'] = df['EEE'][mask] / 10 
-    # (df[col] % 1  == 0).all()
-
-    #skip floating value
-    # df['EEE'] = df['EEE'][ df.EEE.astype(str).str.isdigit() ].astype(int) / 10 # df['EEE'] = df['EEE'][ df['EEE'].notnull() ] / 10
-
-    df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = pd.to_numeric(df['EEE']) / 10
-    # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = df['EEE'].astype(float)
-    # df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
-
+    df['EEE'] = df['EEE'][ df['EEE'].notnull() ].astype(int) / 10
     df['EEE'] = df['EEE'].fillna(9999).astype(float)
-    print(df['EEE'])
+    ## TRIAL 
+    # df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
+    # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = pd.to_numeric(df['EEE']) / 10
+    # df['EEE'] = df['EEE'].fillna(9999).astype(float)
+
+    # ## NEW METHOD
+    # # print(df['EEE']);
+    # # print(~df['EEE'].isin(NA_VALUES))
+    # df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
+    # print(df['EEE'])
+    # # df['EEE_filter_number']  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
+
+    # # df['EEE_integer_only'] = df['EEE'][df.EEE.astype(str).str.isdigit()] 
+    # # df['EEE'] = (df['EEE_filter_number'] % 1  == 0).all()
+    # # print(df['EEE'])
+    # # print(df['EEE']);
+    # # mask  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
+    # # print(mask)
+    # # print(df['EEE'])
+    # # print(df['EEE_filter_number'])
+    # # mask = df['EEE'].apply(lambda x: x.is_integer())
+    # # df[pd.to_numeric(df.SIC, errors='coerce').notnull()]
+
+    # # df['EEE'] = df['EEE'][mask] / 10 
+    # # (df[col] % 1  == 0).all()
+
+    # #skip floating value
+    # # df['EEE'] = df['EEE'][ df.EEE.astype(str).str.isdigit() ].astype(int) / 10 # df['EEE'] = df['EEE'][ df['EEE'].notnull() ] / 10
+
+    # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = pd.to_numeric(df['EEE']) / 10
+    # # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = df['EEE'].astype(float)
+    # # df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
+
+    # df['EEE'] = df['EEE'].fillna(9999).astype(float)
+    # print(df['EEE'])
 
     # F24F24F24F24	-> OK #todo: dicek lagi
     df['F24F24F24F24'] = df['F24F24F24F24'][~df['F24F24F24F24'].isin(NA_VALUES)]
@@ -398,17 +653,50 @@ def reformat(filename):
     df['E'] = df['E'][~df['E'].isin(NA_VALUES)]
     df['E'] = df['E'].fillna(9999).astype(int)
 
-    # DL -> OK
-    df['DL'] = df['DL'][~df['DL'].isin(NA_VALUES)]
-    df['DL'] = df['DL'].fillna(9999).astype(int)
+    def funcDLDMDH(n):
+        if n == '0': result = 0
+        elif n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        elif n == '7': result = 7
+        elif n == '8': result = 8
+        elif n == '9': result = 9                
+        else: result = 9999
+        return(result)
 
-    # DM -> OK
-    df['DM'] = df['DM'][~df['DM'].isin(NA_VALUES)]
-    df['DM'] = df['DM'].fillna(9999).astype(int)
+    ##########
+    ##### DL
+    ##########
 
-    # DH -> OK
-    df['DH'] = df['DH'][~df['DH'].isin(NA_VALUES)]
-    df['DH'] = df['DH'].fillna(9999).astype(int)
+    ## OLD METHOD
+    # df['DL'] = df['DL'][~df['DL'].isin(NA_VALUES)]
+    # df['DL'] = df['DL'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['DL'] = df['DL'].astype('str').apply(funcDLDMDH)
+
+    ##########
+    ##### DM
+    ##########
+
+    ## OLD METHOD
+    # df['DM'] = df['DM'][~df['DM'].isin(NA_VALUES)]
+    # df['DM'] = df['DM'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['DM'] = df['DM'].astype('str').apply(funcDLDMDH)
+
+    ##########
+    ##### DH
+    ##########
+
+    ## OLD METHOD
+    # df['DH'] = df['DH'][~df['DH'].isin(NA_VALUES)]
+    # df['DH'] = df['DH'].fillna(9999).astype(int)
+    ## NEW METHOD    
+    df['DH'] = df['DH'].astype('str').apply(funcDLDMDH)
+
 
     # appp	
     # def funcappp(n):
@@ -426,11 +714,12 @@ def reformat(filename):
     
     def funcappp(n):
         if n < 5000: a = 1
-        elif n >= 5000: a = -1        
-        else: a = 9999
+        elif (n >= 5000) and (n <= 9000): a = -1        
+        else: a = 1
         return(a)
     
-    #todo: kalau nilai awalannya 0 maka hasilnya tidak sesuai
+    #todo: kalau nilai awalannya 0 maka hasilnya tidak sesuai (TAPI SAAT INI DICOBA SUDAH SOLVED)
+    #todo: kalau nilainya lebih dari 9000 maka hasilnya tidak sesuai
     df['appp_help'] = df['appp'][~df['appp'].isin(NA_VALUES)] #df['appp'].fillna(9999).astype(str).apply(lambda x: x.zfill(4))
     df['appp_help'] = df['appp_help'][df['appp_help'].notnull()].astype(str).apply(lambda x: x.zfill(4))      
     # df['appp_first_char'] = df['appp_help'][df['appp_help'].notnull()].astype(str).str[0]
@@ -445,31 +734,89 @@ def reformat(filename):
 
     # P24P24P24	
     # print(df[['P24P24P24']])
-    df['P24P24P24'] = df['P24P24P24'].fillna(9999)
-    # print(df[['P24P24P24']])
+    df['P24P24P24'] = df['P24P24P24'].fillna(9999)    
     df['P24P24P24'] = df['P24P24P24'][~df['P24P24P24'].isin(NA_VALUES)].astype(str).apply(lambda x: x.zfill(3))    
-    
     df.loc[df['P24P24P24'].astype(str).str[0] != '5', 'P24P24P24'] = pd.to_numeric(df['P24P24P24']) / 10
     df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
     df['P24P24P24'] = df['P24P24P24'].fillna(9999)
     # print(df[['P24P24P24']])
-    #todo: kalau ada nilai kosong, masih error    
 
-    # iW -> OK
-    df['iW'] = df['iW'][~df['iW'].isin(NA_VALUES)]
-    df['iW'] = df['iW'].fillna(9999).astype(int)
+    def funciW(n):
+        if n == '0': result = 0
+        elif n == '1': result = 1        
+        elif n == '3': result = 3
+        elif n == '4': result = 4        
+        else: result = 9999
+        return(result)
 
-    # iX -> OK
-    df['iX'] = df['iX'][~df['iX'].isin(NA_VALUES)]
-    df['iX'] = df['iX'].fillna(9999).astype(int)
+    ##########
+    ##### iW
+    ##########
 
-    # iR -> OK
-    df['iR'] = df['iR'][~df['iR'].isin(NA_VALUES)]
-    df['iR'] = df['iR'].fillna(9999).astype(int)
+    ## OLD METHOD
+    # df['iW'] = df['iW'][~df['iW'].isin(NA_VALUES)]
+    # df['iW'] = df['iW'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['iW'] = df['iW'].astype('str').apply(funciW)
 
-    # iE -> OK
-    df['iE'] = df['iE'][~df['iE'].isin(NA_VALUES)]
-    df['iE'] = df['iE'].fillna(9999).astype(int)    
+    def funciX(n):        
+        if n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4
+        elif n == '5': result = 5
+        elif n == '6': result = 6
+        else: result = 9999
+        return(result)
+
+    ##########
+    ##### iX
+    ##########
+
+    ## OLD METHOD
+    # df['iX'] = df['iX'][~df['iX'].isin(NA_VALUES)]
+    # df['iX'] = df['iX'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['iX'] = df['iX'].astype('str').apply(funciX)
+
+
+    def funciR(n):        
+        if n == '0': result = 0
+        elif n == '1': result = 1
+        elif n == '2': result = 2
+        elif n == '3': result = 3
+        elif n == '4': result = 4        
+        else: result = 9999
+        return(result)
+
+
+    ##########
+    ##### iR
+    ##########
+
+    ## OLD METHOD
+    # df['iR'] = df['iR'][~df['iR'].isin(NA_VALUES)]
+    # df['iR'] = df['iR'].fillna(9999).astype(int)
+    ## NEW METHOD
+    df['iR'] = df['iR'].astype('str').apply(funciR)
+
+    def funciE(n):        
+        if n == '0': result = 0
+        elif n == '1': result = 1        
+        else: result = 9999
+        return(result)
+
+    ##########
+    ##### iE
+    ##########
+
+    ## OLD METHOD
+    # df['iE'] = df['iE'][~df['iE'].isin(NA_VALUES)]
+    # df['iE'] = df['iE'].fillna(9999).astype(int)    
+    ## NEW METHOD
+    df['iE'] = df['iE'].astype('str').apply(funciE)
+
+
 
 
     # Remove column 'C' dan 'D' karena tidak dibutuhkan saat ingest
@@ -609,6 +956,110 @@ def funcVV(n):
     elif n == '99': vv = 9999 #dari hasil diskusi pengamatan laut, diisi 9999
     else: vv = 9999
     return(vv)
+
+def funcww(n):
+    if n == '0': ww = 0
+    elif n == '1': ww = 1    
+    elif n == '2': ww = 2
+    elif n == '3': ww = 3
+    elif n == '4': ww = 4
+    elif n == '5': ww = 5
+    elif n == '6': ww = 6
+    elif n == '7': ww = 7
+    elif n == '8': ww = 8
+    elif n == '9': ww = 9
+    elif n == '10': ww = 10
+    elif n == '11': ww = 11
+    elif n == '12': ww = 12
+    elif n == '13': ww = 13
+    elif n == '14': ww = 14
+    elif n == '15': ww = 15
+    elif n == '16': ww = 16
+    elif n == '17': ww = 17
+    elif n == '18': ww = 18
+    elif n == '19': ww = 19
+    elif n == '20': ww = 20
+    elif n == '21': ww = 21
+    elif n == '22': ww = 22
+    elif n == '23': ww = 23
+    elif n == '24': ww = 24
+    elif n == '25': ww = 25
+    elif n == '26': ww = 26
+    elif n == '27': ww = 27
+    elif n == '28': ww = 28
+    elif n == '29': ww = 29
+    elif n == '30': ww = 30
+    elif n == '31': ww = 31
+    elif n == '32': ww = 32
+    elif n == '33': ww = 33
+    elif n == '34': ww = 34
+    elif n == '35': ww = 35
+    elif n == '36': ww = 36
+    elif n == '37': ww = 37
+    elif n == '38': ww = 38
+    elif n == '39': ww = 39
+    elif n == '40': ww = 40
+    elif n == '41': ww = 41
+    elif n == '42': ww = 42
+    elif n == '43': ww = 43
+    elif n == '44': ww = 44
+    elif n == '45': ww = 45
+    elif n == '46': ww = 46
+    elif n == '47': ww = 47
+    elif n == '48': ww = 48
+    elif n == '49': ww = 49
+    elif n == '50': ww = 50
+    elif n == '51': ww = 51
+    elif n == '52': ww = 52
+    elif n == '53': ww = 53
+    elif n == '54': ww = 54
+    elif n == '55': ww = 55
+    elif n == '56': ww = 56
+    elif n == '57': ww = 57
+    elif n == '58': ww = 58
+    elif n == '59': ww = 59
+    elif n == '60': ww = 60
+    elif n == '61': ww = 61
+    elif n == '62': ww = 62
+    elif n == '63': ww = 63
+    elif n == '64': ww = 64
+    elif n == '65': ww = 65
+    elif n == '66': ww = 66
+    elif n == '67': ww = 67
+    elif n == '68': ww = 68
+    elif n == '69': ww = 69
+    elif n == '70': ww = 70
+    elif n == '71': ww = 71
+    elif n == '72': ww = 72
+    elif n == '73': ww = 73
+    elif n == '74': ww = 74
+    elif n == '75': ww = 75
+    elif n == '76': ww = 76
+    elif n == '77': ww = 77
+    elif n == '78': ww = 78
+    elif n == '79': ww = 79
+    elif n == '80': ww = 80
+    elif n == '81': ww = 81
+    elif n == '82': ww = 82
+    elif n == '83': ww = 83
+    elif n == '84': ww = 84
+    elif n == '85': ww = 85
+    elif n == '86': ww = 86
+    elif n == '87': ww = 87
+    elif n == '88': ww = 88
+    elif n == '89': ww = 89
+    elif n == '90': ww = 90
+    elif n == '91': ww = 91
+    elif n == '92': ww = 92
+    elif n == '93': ww = 93
+    elif n == '94': ww = 94
+    elif n == '95': ww = 95
+    elif n == '96': ww = 96
+    elif n == '97': ww = 97
+    elif n == '98': ww = 98
+    elif n == '99': ww = 99
+    else: ww = 9999
+    return(ww)
 
 def funcRRR(n):
     if n == '0': rrr = 9999 #dari hasil diskusi diisi 9999
