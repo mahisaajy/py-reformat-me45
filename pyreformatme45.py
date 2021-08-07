@@ -28,6 +28,8 @@ def main():
 def reformat(filename):
 
     NA_VALUES = [9999, 99999, '/', '//', '///', '////', '\\', '.', '#REF!', '#VALUE!', 'STNR', '#N/A', '#', 'N', '/A', '`', '*', 'Z', 'A', 'C', 'AC', '*/', '+', 'CI', '0S', 'y', 'BN ', 'CNS SL RA', 'CLD DECR', 'ALSE', 'cdd', 'L' , 'x', 'E', '0`', '3            tidak ada hujan', 'FALSE']
+    NA_VALUES_QFF_QFE = NA_VALUES[:]
+    NA_VALUES_QFF_QFE.remove(9999)
 
     df = pd.read_csv (r'process/'+filename, 
     skipinitialspace = True,
@@ -200,16 +202,37 @@ def reformat(filename):
     ## NEW METHOD
     df['W2'] = df['W2'].astype('str').apply(funcW1W2)
 
-    # QFF
-    # df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))    
-    # df['QFF'] = df["QFF"].str.replace("'","");
-    df['QFF'] = df['QFF'][~df['QFF'].isin(NA_VALUES)]
-    df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
-    df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
-    df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10  
+    ##########
+    ##### QFF
+    ##########
+
+    ## BEST METHOD
+    df['QFF'] = df['QFF'][~df['QFF'].isin(NA_VALUES_QFF_QFE)]
+    df['QFF'] = df['QFF'][df['QFF'].astype(str).str.len() <= 6] # untuk memfilter yang diproses hanya 6 digit bilangan termasuk .0
+    df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(int).astype(str).str.zfill(4) #df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
+    df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10     
+    df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10      
     df['QFF'] = df['QFF'].fillna(9999).astype(float)
-    # print(df[['QFF', 'QFF_new']])   
-    #todo kalau ada data kosong maka hasilnya jadi ga bener
+    ## TRIAL
+    # # df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))    
+    # # df['QFF'] = df["QFF"].str.replace("'","");
+    # df['QFF'] = df['QFF'][~df['QFF'].isin(NA_VALUES_QFF_QFE)]
+    # print(df['QFF'])
+    # # df['QFF'] = df['QFF'].astype(str).str.extract('^(\d{4})', expand=False)    
+    # df['QFF'] = df['QFF'][df['QFF'].astype(str).str.len() <= 6] # untuk memfilter yang diproses hanya 6 digit bilangan termasuk .0
+    # # df['QFF'] = df['QFF'][~df['QFF'].astype(str).apply(lambda x: len(x)) > 4]
+    # # df['QFF_help'] = df['QFF'].apply(lambda x: len(x))
+    # # cond = df['QFF_help'] > 4
+    # # df['QFF'] = df['QFF'][cond]
+    # print(df['QFF'])
+    # df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(int).astype(str).str.zfill(4) #df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))
+    # print(df['QFF'])
+    # df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
+    # print(df['QFF'])
+    # df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10  
+    # print(df['QFF'])
+    # df['QFF'] = df['QFF'].fillna(9999).astype(float)
+    # # print(df[['QFF', 'QFF_new']])   
 
     # TtTtTt	
     df['TtTtTt'] = df['TtTtTt'][~df['TtTtTt'].isin(NA_VALUES)]
@@ -541,15 +564,23 @@ def reformat(filename):
     df['UU'] = df['UU'].fillna(9999).astype(int)
 
     # QFE
-    # df['QFE'] = df["QFE"].str.replace("'","");
-    df['QFE'] = df['QFE'][~df['QFE'].isin(NA_VALUES)]
-    df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(str).apply(lambda x: x.zfill(4))        
-    df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10 # df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10
-    df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE'] = pd.to_numeric(df['QFE']) / 10  
-    df['QFE'] = df['QFE'].fillna(9999).astype(float)   
+    ## BEST METHOD
+    df['QFE'] = df['QFE'][~df['QFE'].isin(NA_VALUES_QFF_QFE)]
+    df['QFE'] = df['QFE'][df['QFE'].astype(str).str.len() <= 6] # untuk memfilter yang diproses hanya 6 digit bilangan termasuk .0
+    df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(int).astype(str).str.zfill(4) #df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
+    df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10     
+    df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE'] = pd.to_numeric(df['QFE']) / 10      
+    df['QFE'] = df['QFE'].fillna(9999).astype(float)
+    ## TRIAL
+    # # df['QFE'] = df["QFE"].str.replace("'","");
+    # df['QFE'] = df['QFE'][~df['QFE'].isin(NA_VALUES)]
+    # df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(str).apply(lambda x: x.zfill(4))        
+    # df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10 # df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10
+    # df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE'] = pd.to_numeric(df['QFE']) / 10  
+    # df['QFE'] = df['QFE'].fillna(9999).astype(float)   
 
-    # df['QFE_help'] = df['QFE'].astype(str).apply(lambda x: x.zfill(4))
-    # df['QFE_new'] = pd.to_numeric( str(1) + df['QFE_help']) / 10
+    # # df['QFE_help'] = df['QFE'].astype(str).apply(lambda x: x.zfill(4))
+    # # df['QFE_new'] = pd.to_numeric( str(1) + df['QFE_help']) / 10
 
     # TwTwTw	
     df['TwTwTw'] = df['TwTwTw'][~df['TwTwTw'].isin(NA_VALUES)]
