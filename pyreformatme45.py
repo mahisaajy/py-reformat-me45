@@ -27,9 +27,10 @@ def main():
 
 def reformat(filename):
 
-    NA_VALUES = [9999, 99999, '/', '//', '///', '////', '\\', '.', '#REF!', '#VALUE!', 'STNR', '#N/A', '#', 'N', '/A', '`', '*', 'Z', 'A', 'C', 'AC', '*/', '+', 'CI', '0S', 'y', 'BN ', 'CNS SL RA', 'CLD DECR', 'ALSE', 'cdd', 'L' , 'x', 'E', '0`', '3            tidak ada hujan', 'FALSE']
+    NA_VALUES = [9999, 99999, '9999', '99999', '/', '//', '///', '////', '\\', '.', '#REF!', '#VALUE!', 'STNR', '#N/A', '#', 'N', '/A', '`', '*', 'Z', 'A', 'C', 'AC', '*/', '+', 'CI', '0S', 'y', 'BN ', 'CNS SL RA', 'CLD DECR', 'ALSE', 'cdd', 'L' , 'x', 'E', '0`', '3            tidak ada hujan', 'FALSE']
     NA_VALUES_QFF_QFE = NA_VALUES[:]
     NA_VALUES_QFF_QFE.remove(9999)
+    NA_VALUES_QFF_QFE.remove('9999')
 
     df = pd.read_csv (r'process/'+filename, 
     skipinitialspace = True,
@@ -306,8 +307,8 @@ def reformat(filename):
         elif n == '7': h = 2000
         elif n == '8': h = 2500
         elif n == '9': h = 2501 #dari hasil diskusi diisi 2501
-        elif n == '/': h = '//' 
-        elif n == '//': h = '//' 
+        # elif n == '/': h = '//' # di bmkgsoft tidak menerima garis miring untuk parameter ini
+        # elif n == '//': h = '//' # di bmkgsoft tidak menerima garis miring untuk parameter ini
         else: h = 9999
         return(h)
 
