@@ -13,15 +13,9 @@ def main():
     
 
     basepath = 'process/'
-    # with os.scandir(basepath) as entries:
-    #     for entry in entries:
-    #         if entry.is_file():
-    #             # print(entry.name)
-    #             reformat(entry.name)
 
     filenames = find_csv_filenames(basepath)
-    for name in filenames:
-        # print name
+    for name in filenames:        
         reformat(name)
 
 
@@ -38,28 +32,16 @@ def reformat(filename):
     ) #(r'sample/test ingest me45.csv')
     print(df)
 
-    # Remove leading and trailing characters.
-    # df.columns = df.columns.str.strip()
-
-    # df['appp'] = df['appp'].str.replace(' ', '')
-
     #todo: check if columen exist
     #https://stackoverflow.com/questions/24870306/how-to-check-if-a-column-exists-in-pandas
 
-    #TdTdTd
-    ## BEST METHOD
+    ##########
+    ##### TdTdTd  
+    ##########
+
     df['TdTdTd'] = df['TdTdTd'][~df['TdTdTd'].isin(NA_VALUES)]
     df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ].astype(int) / 10    
     df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(float)    
-
-    ## TRIAL
-    # df['TdTdTd'] = df['TdTdTd'][~df['TdTdTd'].isin(NA_VALUES)]
-    # df.loc[df['TdTdTd'].astype(str).str.isdecimal() == True, 'TdTdTd'] = pd.to_numeric(df['TdTdTd']) / 10 # df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ].astype(int) / 10 # df['TdTdTd'] = df['TdTdTd'][ df['TdTdTd'].notnull() ] / 10
-    # df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(float)    
-    
-    # df['TdTdTd'] = df['TdTdTd'][ ~df['TdTdTd'].isin([9999, 99999]) ].astype(float) / 10
-    # df['TdTdTd'] = df['TdTdTd'].fillna(9999) # df['TdTdTd'].replace(np.nan, 9999)
-    # # df['TdTdTd'] = df['TdTdTd'].fillna(9999).astype(int)
     
     ##########
     ##### N
@@ -80,10 +62,7 @@ def reformat(filename):
         elif n == '//': result = '//' 
         else: result = 9999
         return(result)
-    ## OLD METHOD
-    # df['N'] = df['N'][~df['N'].isin(NA_VALUES)]
-    # df['N'] = df['N'].fillna(9999).astype(int)
-    ## NEW METHOD
+
     df['N'] = df['N'].astype('str').apply(funcN)
 
     ##########
@@ -132,14 +111,7 @@ def reformat(filename):
         else: dd = 9999
         return(dd)
 
-    ## OLD METHOD
-    # df['dd'] = df['dd'][~df['dd'].isin(NA_VALUES)] #.astype(str)
-    # df['dd'] = df['dd'][ df['dd'].notnull() ].astype(int) * 10 # df['dd'] = df['dd'][ df['dd'].notnull() ] * 10
-    # df['dd'] = df['dd'].fillna(9999).astype(int)
-    # # df['dd'] = pd.to_numeric( df['dd'].astype(str) + str(0) )
-    ## NEW METHOD
     df['dd'] = df['dd'].astype('str').apply(funcdd)
-    # df['dd'] = df['dd'][ ~df['dd'].isin(['9999']) ].astype(int) * 10
     df.loc[df['dd'] != 9999, 'dd'] = pd.to_numeric(df['dd']) * 10      
 
     
@@ -160,10 +132,6 @@ def reformat(filename):
     ##### ww
     ##########
 
-    ## OLD METHOD
-    # df['ww'] = df['ww'][~df['ww'].isin(NA_VALUES)]
-    # df['ww'] = df['ww'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['ww'] = df['ww'][~df['ww'].isin(NA_VALUES)]
     df['ww'] = df['ww'].fillna(9999).astype(int)
     df['ww'] = df['ww'].astype('str').apply(funcww)
@@ -187,57 +155,31 @@ def reformat(filename):
     ##### W1
     ##########
 
-    ## OLD METHOD
-    # df['W1'] = df['W1'][~df['W1'].isin(NA_VALUES)]
-    # df['W1'] = df['W1'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['W1'] = df['W1'].astype('str').apply(funcW1W2)
 
     ##########
     ##### W2
     ##########
 
-    ## OLD METHOD
-    # df['W2'] = df['W2'][~df['W2'].isin(NA_VALUES)]
-    # df['W2'] = df['W2'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['W2'] = df['W2'].astype('str').apply(funcW1W2)
 
     ##########
     ##### QFF
     ##########
 
-    ## BEST METHOD
     df['QFF'] = df['QFF'][~df['QFF'].isin(NA_VALUES_QFF_QFE)]
     df['QFF'] = df['QFF'][df['QFF'].astype(str).str.len() <= 6] # untuk memfilter yang diproses hanya 6 digit bilangan termasuk .0
-    df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(int).astype(str).str.zfill(4) #df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
-    df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10     
+    df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(int).astype(str).str.zfill(4) 
+    df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  
     df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10      
-    df['QFF'] = df['QFF'].fillna(9999).astype(float)
-    ## TRIAL
-    # # df['QFF'] = df['QFF'][~df['QFF'].isin([9999, 99999])].astype(str).apply(lambda x: x.zfill(4))    
-    # # df['QFF'] = df["QFF"].str.replace("'","");
-    # df['QFF'] = df['QFF'][~df['QFF'].isin(NA_VALUES_QFF_QFE)]
-    # print(df['QFF'])
-    # # df['QFF'] = df['QFF'].astype(str).str.extract('^(\d{4})', expand=False)    
-    # df['QFF'] = df['QFF'][df['QFF'].astype(str).str.len() <= 6] # untuk memfilter yang diproses hanya 6 digit bilangan termasuk .0
-    # # df['QFF'] = df['QFF'][~df['QFF'].astype(str).apply(lambda x: len(x)) > 4]
-    # # df['QFF_help'] = df['QFF'].apply(lambda x: len(x))
-    # # cond = df['QFF_help'] > 4
-    # # df['QFF'] = df['QFF'][cond]
-    # print(df['QFF'])
-    # df['QFF'] = df['QFF'][df['QFF'].notnull()].astype(int).astype(str).str.zfill(4) #df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))
-    # print(df['QFF'])
-    # df.loc[df['QFF'].astype(str).str[0] == '0', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10 
-    # print(df['QFF'])
-    # df.loc[df['QFF'].astype(str).str[0] == '9', 'QFF'] = pd.to_numeric(df['QFF']) / 10  
-    # print(df['QFF'])
-    # df['QFF'] = df['QFF'].fillna(9999).astype(float)
-    # # print(df[['QFF', 'QFF_new']])   
+    df['QFF'] = df['QFF'].fillna(9999).astype(float)  
 
-    # TtTtTt	
+    #############
+    ##### TtTtTt
+    #############
+
     df['TtTtTt'] = df['TtTtTt'][~df['TtTtTt'].isin(NA_VALUES)]
-    df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ].astype(int) / 10 # df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ] / 10
+    df['TtTtTt'] = df['TtTtTt'][ df['TtTtTt'].notnull() ].astype(int) / 10 
     df['TtTtTt'] = df['TtTtTt'].fillna(9999).astype(float)
 
     def funcNh(n):
@@ -260,10 +202,6 @@ def reformat(filename):
     ##### Nh
     ##########
 
-    ## OLD METHOD
-    # df['Nh'] = df['Nh'][~df['Nh'].isin(NA_VALUES)]
-    # df['Nh'] = df['Nh'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['Nh'] = df['Nh'].astype('str').apply(funcNh)
 
 
@@ -288,14 +226,13 @@ def reformat(filename):
     ##### CL
     ###########
 
-    ## OLD METHOD
-    # df['CL'] = df['CL'][~df['CL'].isin([9999, 99999])]
-    # df['CL'] = df['CL'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['CL'] = df['CL'].astype('str').apply(funcCLCMCHNsC)
     
 
-    # h	
+    ###########
+    ##### h	
+    ###########
+    
     def funch(n):
         if n == '0': h = 50
         elif n == '1': h = 100
@@ -318,29 +255,17 @@ def reformat(filename):
     ##### CM
     ##########
 
-    ## OLD METHOD
-    # df['CM'] = df['CM'][~df['CM'].isin([9999, 99999])]
-    # df['CM'] = df['CM'].fillna(9999).astype(int)
-    # NEW METHOD
     df['CM'] = df['CM'].astype('str').apply(funcCLCMCHNsC)
     
     ##########
     ##### CH
     ##########
 
-    ## OLD METHOD
-    # df['CH'] = df['CH'][~df['CH'].isin([9999, 99999])]
-    # df['CH'] = df['CH'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['CH'] = df['CH'].astype('str').apply(funcCLCMCHNsC)
 
     ##########
     ##### Ns_1
 
-    ## OLD METHOD
-    # df['Ns_1'] = df['Ns_1'][~df['Ns_1'].isin(NA_VALUES)]
-    # df['Ns_1'] = df['Ns_1'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['Ns_1'] = df['Ns_1'].astype('str').apply(funcCLCMCHNsC)
 
     # def funcC(n):
@@ -363,11 +288,7 @@ def reformat(filename):
     ##### C_1
     ##########
 
-    ## OLD METHOD
-    # df['C_1'] = df['C_1'][~df['C_1'].isin([9999, 99999])]
-    # df['C_1'] = df['C_1'].fillna(9999).astype(int)
-    ## NEW METHOD
-    df['C_1'] = df['C_1'].astype('str').apply(funcCLCMCHNsC) # df['C_1'].astype('str').apply(funcC)
+    df['C_1'] = df['C_1'].astype('str').apply(funcCLCMCHNsC) 
 
 
 
@@ -485,21 +406,13 @@ def reformat(filename):
     ##### Ns_2
     ##########
 
-    ## OLD METHOD
-    # df['Ns_2'] = df['Ns_2'][~df['Ns_2'].isin(NA_VALUES)]
-    # df['Ns_2'] = df['Ns_2'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['Ns_2'] = df['Ns_2'].astype('str').apply(funcCLCMCHNsC)
 
     ##########
     ##### C_2
     ##########
 
-    ## OLD METHOD
-    # df['C_2'] = df['C_2'][~df['C_2'].isin([9999, 99999])]
-    # df['C_2'] = df['C_2'].fillna(9999).astype(int)
-    ## NEW METHOD
-    df['C_2'] = df['C_2'].astype('str').apply(funcCLCMCHNsC) # df['C_2'].apply(funcC)
+    df['C_2'] = df['C_2'].astype('str').apply(funcCLCMCHNsC)
 
     ##########
     ##### Hshs_2	
@@ -511,20 +424,12 @@ def reformat(filename):
     ##### Ns_3
     ##########
 
-    ## OLD METHOD
-    # df['Ns_3'] = df['Ns_3'][~df['Ns_3'].isin(NA_VALUES)]
-    # df['Ns_3'] = df['Ns_3'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['Ns_3'] = df['Ns_3'].astype('str').apply(funcCLCMCHNsC)
 
     ##########
     ##### C_3
     ##########
     
-    ## OLD METHOD
-    # df['C_3'] = df['C_3'][~df['C_3'].isin([9999, 99999])]
-    # df['C_3'] = df['C_3'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['C_3'] = df['C_3'].astype('str').apply(funcCLCMCHNsC) # df['C_3'].apply(funcC)
 
     ##########
@@ -551,10 +456,6 @@ def reformat(filename):
     ##### e
     ##########
 
-    ## OLD METHOD
-    # df['e'] = df['e'][~df['e'].isin(NA_VALUES)]
-    # df['e'] = df['e'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['e'] = df['e'].astype('str').apply(funce)
 
     ##########
@@ -564,28 +465,23 @@ def reformat(filename):
     df['UU'] = df['UU'][~df['UU'].isin(NA_VALUES)]
     df['UU'] = df['UU'].fillna(9999).astype(int)
 
-    # QFE
-    ## BEST METHOD
+    ##########
+    ##### QFE
+    ##########
+
     df['QFE'] = df['QFE'][~df['QFE'].isin(NA_VALUES_QFF_QFE)]
     df['QFE'] = df['QFE'][df['QFE'].astype(str).str.len() <= 6] # untuk memfilter yang diproses hanya 6 digit bilangan termasuk .0
-    df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(int).astype(str).str.zfill(4) #df['QFF'][df['QFF'].notnull()].astype(str).apply(lambda x: x.zfill(4))    
-    df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10  # df.loc[df['QFF'].astype(str).str[0] != '9', 'QFF'] = (10000 + pd.to_numeric(df['QFF'])) / 10     
+    df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(int).astype(str).str.zfill(4) 
+    df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10  
     df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE'] = pd.to_numeric(df['QFE']) / 10      
     df['QFE'] = df['QFE'].fillna(9999).astype(float)
-    ## TRIAL
-    # # df['QFE'] = df["QFE"].str.replace("'","");
-    # df['QFE'] = df['QFE'][~df['QFE'].isin(NA_VALUES)]
-    # df['QFE'] = df['QFE'][df['QFE'].notnull()].astype(str).apply(lambda x: x.zfill(4))        
-    # df.loc[df['QFE'].astype(str).str[0] == '0', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10 # df.loc[df['QFE'].astype(str).str[0] != '9', 'QFE'] = (10000 + pd.to_numeric(df['QFE'])) / 10
-    # df.loc[df['QFE'].astype(str).str[0] == '9', 'QFE'] = pd.to_numeric(df['QFE']) / 10  
-    # df['QFE'] = df['QFE'].fillna(9999).astype(float)   
 
-    # # df['QFE_help'] = df['QFE'].astype(str).apply(lambda x: x.zfill(4))
-    # # df['QFE_new'] = pd.to_numeric( str(1) + df['QFE_help']) / 10
+    ##########
+    ##### TwTwTw
+    ##########
 
-    # TwTwTw	
     df['TwTwTw'] = df['TwTwTw'][~df['TwTwTw'].isin(NA_VALUES)]
-    df['TwTwTw'] = df['TwTwTw'][ df['TwTwTw'].notnull() ].astype(int) / 10 # df['TwTwTw'] = df['TwTwTw'][ df['TwTwTw'].notnull() ] / 10
+    df['TwTwTw'] = df['TwTwTw'][ df['TwTwTw'].notnull() ].astype(int) / 10 
     df['TwTwTw'] = df['TwTwTw'].fillna(9999).astype(float)
 
     # RRR	
@@ -610,75 +506,37 @@ def reformat(filename):
     ##### tR
     ##########
 
-    ## OLD METHOD
-    # df['tR'] = df['tR'][~df['tR'].isin(NA_VALUES)]
-    # df['tR'] = df['tR'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['tR'] = df['tR'].astype('str').apply(functR)
 
 
+    ##########
+    ##### TxTxTx
+    ##########
     
-
-    # TxTxTx
     df['TxTxTx'] = df['TxTxTx'][~df['TxTxTx'].isin(NA_VALUES)]    
-    # df.loc[df['TxTxTx'].astype(str).map(len) <= 3, 'TxTxTx'] = pd.to_numeric(df['TxTxTx']) / 10
-    df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ].astype(int) / 10 # df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ] / 10
-    # df.loc[df['TxTxTx'].astype(str).str.isdecimal() == True, 'TxTxTx'] = pd.to_numeric(df['TxTxTx']) / 10
+    df['TxTxTx'] = df['TxTxTx'][ df['TxTxTx'].notnull() ].astype(int) / 10 
     df['TxTxTx'] = df['TxTxTx'].fillna(9999).astype(float)
 
-    # TnTnTn	
+    ##########
+    ##### TnTnTn
+    ##########
+
     df['TnTnTn'] = df['TnTnTn'][~df['TnTnTn'].isin(NA_VALUES)]
-    df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ].astype(int) / 10 # df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ] / 10
+    df['TnTnTn'] = df['TnTnTn'][ df['TnTnTn'].notnull() ].astype(int) / 10
     df['TnTnTn'] = df['TnTnTn'].fillna(9999).astype(float)
 
     # EEE
-    ## BEST METHOD
     df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
     df['EEE'] = df['EEE'][ df['EEE'].notnull() ].astype(int) / 10
     df['EEE'] = df['EEE'].fillna(9999).astype(float)
-    ## TRIAL 
-    # df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
-    # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = pd.to_numeric(df['EEE']) / 10
-    # df['EEE'] = df['EEE'].fillna(9999).astype(float)
-
-    # ## NEW METHOD
-    # # print(df['EEE']);
-    # # print(~df['EEE'].isin(NA_VALUES))
-    # df['EEE'] = df['EEE'][~df['EEE'].isin(NA_VALUES)]
-    # print(df['EEE'])
-    # # df['EEE_filter_number']  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
-
-    # # df['EEE_integer_only'] = df['EEE'][df.EEE.astype(str).str.isdigit()] 
-    # # df['EEE'] = (df['EEE_filter_number'] % 1  == 0).all()
-    # # print(df['EEE'])
-    # # print(df['EEE']);
-    # # mask  = pd.to_numeric(df['EEE'], errors='coerce').notnull()
-    # # print(mask)
-    # # print(df['EEE'])
-    # # print(df['EEE_filter_number'])
-    # # mask = df['EEE'].apply(lambda x: x.is_integer())
-    # # df[pd.to_numeric(df.SIC, errors='coerce').notnull()]
-
-    # # df['EEE'] = df['EEE'][mask] / 10 
-    # # (df[col] % 1  == 0).all()
-
-    # #skip floating value
-    # # df['EEE'] = df['EEE'][ df.EEE.astype(str).str.isdigit() ].astype(int) / 10 # df['EEE'] = df['EEE'][ df['EEE'].notnull() ] / 10
-
-    # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = pd.to_numeric(df['EEE']) / 10
-    # # df.loc[df['EEE'].astype(str).str.isdecimal() == True, 'EEE'] = df['EEE'].astype(float)
-    # # df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
-
-    # df['EEE'] = df['EEE'].fillna(9999).astype(float)
-    # print(df['EEE'])
-
+    
     # F24F24F24F24	-> OK #todo: dicek lagi
     df['F24F24F24F24'] = df['F24F24F24F24'][~df['F24F24F24F24'].isin(NA_VALUES)]
     df['F24F24F24F24'] = df['F24F24F24F24'].fillna(9999).astype(int)
 
     # SSS	
     df['SSS'] = df['SSS'][~df['SSS'].isin(NA_VALUES)]
-    df['SSS'] = df['SSS'][ df['SSS'].notnull() ].astype(int) / 10 # df['SSS'] = df['SSS'][ df['SSS'].notnull() ] / 10
+    df['SSS'] = df['SSS'][ df['SSS'].notnull() ].astype(int) / 10 
     df['SSS'] = df['SSS'].fillna(9999).astype(float)
 
     # E	-> OK
@@ -703,30 +561,18 @@ def reformat(filename):
     ##### DL
     ##########
 
-    ## OLD METHOD
-    # df['DL'] = df['DL'][~df['DL'].isin(NA_VALUES)]
-    # df['DL'] = df['DL'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['DL'] = df['DL'].astype('str').apply(funcDLDMDH)
 
     ##########
     ##### DM
     ##########
 
-    ## OLD METHOD
-    # df['DM'] = df['DM'][~df['DM'].isin(NA_VALUES)]
-    # df['DM'] = df['DM'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['DM'] = df['DM'].astype('str').apply(funcDLDMDH)
 
     ##########
     ##### DH
     ##########
 
-    ## OLD METHOD
-    # df['DH'] = df['DH'][~df['DH'].isin(NA_VALUES)]
-    # df['DH'] = df['DH'].fillna(9999).astype(int)
-    ## NEW METHOD    
     df['DH'] = df['DH'].astype('str').apply(funcDLDMDH)
 
 
@@ -752,26 +598,19 @@ def reformat(filename):
     
     #todo: kalau nilai awalannya 0 maka hasilnya tidak sesuai (TAPI SAAT INI DICOBA SUDAH SOLVED)
     #todo: kalau nilainya lebih dari 9000 maka hasilnya tidak sesuai
-    df['appp_help'] = df['appp'][~df['appp'].isin(NA_VALUES)] #df['appp'].fillna(9999).astype(str).apply(lambda x: x.zfill(4))
+    df['appp_help'] = df['appp'][~df['appp'].isin(NA_VALUES)]
     df['appp_help'] = df['appp_help'][df['appp_help'].notnull()].astype(str).apply(lambda x: x.zfill(4))      
-    # df['appp_first_char'] = df['appp_help'][df['appp_help'].notnull()].astype(str).str[0]
     df['appp'] = df['appp_help'].str[1:].astype(float) * df['appp_help'].astype(float).apply(funcappp) / 10
     df['appp'] = df['appp'].fillna(9999).astype(float)
 
-    del df['appp_help']
-    # print(df[['appp', 
-    #     # 'appp_first_char', 
-    #     'appp_new'
-    #     ]])    
+    del df['appp_help']    
 
     # P24P24P24	
-    # print(df[['P24P24P24']])
     df['P24P24P24'] = df['P24P24P24'].fillna(9999)    
     df['P24P24P24'] = df['P24P24P24'][~df['P24P24P24'].isin(NA_VALUES)].astype(str).apply(lambda x: x.zfill(3))    
     df.loc[df['P24P24P24'].astype(str).str[0] != '5', 'P24P24P24'] = pd.to_numeric(df['P24P24P24']) / 10
     df.loc[df['P24P24P24'].astype(str).str[0] == '5', 'P24P24P24'] = (pd.to_numeric(df['P24P24P24']) - 500 )/ 10 * -1    
     df['P24P24P24'] = df['P24P24P24'].fillna(9999)
-    # print(df[['P24P24P24']])
 
     def funciW(n):
         if n == '0': result = 0
@@ -785,10 +624,6 @@ def reformat(filename):
     ##### iW
     ##########
 
-    ## OLD METHOD
-    # df['iW'] = df['iW'][~df['iW'].isin(NA_VALUES)]
-    # df['iW'] = df['iW'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['iW'] = df['iW'].astype('str').apply(funciW)
 
     def funciX(n):        
@@ -805,10 +640,6 @@ def reformat(filename):
     ##### iX
     ##########
 
-    ## OLD METHOD
-    # df['iX'] = df['iX'][~df['iX'].isin(NA_VALUES)]
-    # df['iX'] = df['iX'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['iX'] = df['iX'].astype('str').apply(funciX)
 
 
@@ -826,10 +657,6 @@ def reformat(filename):
     ##### iR
     ##########
 
-    ## OLD METHOD
-    # df['iR'] = df['iR'][~df['iR'].isin(NA_VALUES)]
-    # df['iR'] = df['iR'].fillna(9999).astype(int)
-    ## NEW METHOD
     df['iR'] = df['iR'].astype('str').apply(funciR)
 
     def funciE(n):        
@@ -842,10 +669,6 @@ def reformat(filename):
     ##### iE
     ##########
 
-    ## OLD METHOD
-    # df['iE'] = df['iE'][~df['iE'].isin(NA_VALUES)]
-    # df['iE'] = df['iE'].fillna(9999).astype(int)    
-    ## NEW METHOD
     df['iE'] = df['iE'].astype('str').apply(funciE)
 
 
@@ -861,8 +684,6 @@ def reformat(filename):
     # datetime object containing current date and time
     now = datetime.now()
     
-    # print("now =", now)
-
     # dd/mm/YY H:M:S
     dt_string = now.strftime("%Y%m%d%H%M")
     # print("date and time =", dt_string)	
@@ -872,15 +693,6 @@ def reformat(filename):
     print(df)
     df.info(verbose=True)
     df.to_csv('output/'+'importME45_'+dt_string+' - '+filename, index=False)
-    # print(df.dtypes)
-
-
-
-
-    
-
-
-
 
 
 
